@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+option go_package="x/lms/types";
+
+import "cosmos/lms/v1beta1/tx.proto";
+
+// import "google/protobuf/timestamp.proto";
+
+// message Students {
+//     string address = 1;
+//     string name = 2;
+//     string id = 3;
+// }
+
+message GetStudentsRequest{
+    
+}
+
+message GetStudentsResponse{
+    repeated Student  students=1;
+}
+
+message GetLeaveRequestsRequest{
+
+}
+
+message GetLeaveRequestsResponse{
+    repeated ApplyLeaveRequest leaverequest=1;
+
+}
+
+message GetLeaveApprovesRequest{
+
+}
+
+message GetLeaveApprovesResponse{
+    repeated AcceptLeaveRequest leaveapprove=1;
+}
+
+service Query{
+    rpc GetStudents(GetStudentsRequest) returns (GetStudentsResponse){};
+    rpc GetLeaveRequests(GetLeaveRequestsRequest) returns (GetLeaveApprovesResponse){};
+    rpc GetLeaveApproves(GetLeaveApprovesRequest) returns (GetLeaveApprovesResponse){};
+}
+
+
+

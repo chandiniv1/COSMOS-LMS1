@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+option go_package="x/lms/types";
+
+
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+option (gogoproto.goproto_getters_all) = false;
+
+message Student {
+    string address = 1;
+    string name = 2;
+    string id = 3;
+}
+
+message LeaveRequest{
+    
+}
+message RegisterAdminRequest {
+    string address = 1;
+    string name = 2;
+}
+
+message RegisterAdminResponse{
+
+}
+
+message AddStudentRequest {
+    string admin = 1;
+    //repeated Student students = 2;
+    string address = 2;
+    string name = 3;
+    string id = 4;
+}
+
+message AddStudentResponse{}
+
+message ApplyLeaveRequest {   
+    string address = 1;   
+    string reason = 2;  
+    google.protobuf.Timestamp from = 3;  
+    google.protobuf.Timestamp to = 4;
+}
+
+message ApplyLeaveResponse {
+
+}
+
+enum LeaveStatus {
+    STATUS_UNDEFINED = 0;   
+    STATUS_ACCEPTED = 1;   
+    STATUS_REJECTED = 2;
+}
+
+message AcceptLeaveRequest {
+    string admin = 1;   
+    uint64 leave_id = 2;   
+    LeaveStatus status = 3;
+}
+
+message AcceptLeaveResponse {
+
+}
+
+service Msg {
+    rpc RegisterAdmin(RegisterAdminRequest) returns (RegisterAdminResponse);
+    rpc AddStudent(AddStudentRequest) returns (AddStudentResponse);
+    rpc ApplyLeave(ApplyLeaveRequest) returns  (ApplyLeaveResponse);
+    rpc AcceptLeave(AcceptLeaveRequest) returns (AcceptLeaveResponse);
+}
+
+
+
+
+
