@@ -1,11 +1,15 @@
 package keeper
 
 import (
+	"errors"
+
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	codec "github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
 	//"context"
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -37,19 +41,27 @@ func NewKeeper(
 // }
 
 func (k Keeper) AddStd(ctx sdk.Context, addstudent *types.AddStudentRequest) error {
-	
-	store := ctx.KVStore(k.storeKey)
-	// key := types.StudentKey
 
-	k.cdc.MustMarshal(addstudent)
+	if addstudent.Name==""{
+		return errors.New("name cant be null")
+	}else if addstudent.Address==""{
+		return errors.New("address cant be null")
+	}else if addstudent.Id==""{
+		return errors.New("Id cant be null")
+	}else{
+		store := ctx.KVStore(k.storeKey)
+		// key := types.StudentKey
 
-	marshalAddStudent, err := k.cdc.Marshal(addstudent)
-	if err != nil {
-		return err
+		k.cdc.MustMarshal(addstudent)
+
+		marshalAddStudent, err := k.cdc.Marshal(addstudent)
+		if err != nil {
+			panic(err)
+		}
+		//store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
+		//store.Set(types.StudentStoreKey(addstudent.Address),marshalAddStudent)
+		store.Set(types.StudentStoreKey(addstudent.Id), marshalAddStudent)
 	}
-	//store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
-	//store.Set(types.StudentStoreKey(addstudent.Address),marshalAddStudent)
-	store.Set(types.StudentStoreKey(addstudent.Id), marshalAddStudent)
 	return nil
 }
 
