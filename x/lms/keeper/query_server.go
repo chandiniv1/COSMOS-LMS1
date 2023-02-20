@@ -3,7 +3,7 @@ package keeper
 import (
 	"context"
 
-	"github.com/chandiniv1/cosmos-LMS/x/lms/types"
+	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 )
 
 type queryServer struct {
@@ -15,6 +15,10 @@ var _ types.QueryServer = queryServer{}
 
 func (k queryServer) GetStudents(context.Context, *types.GetStudentsRequest) (*types.GetStudentsResponse, error) {
 	return &types.GetStudentsResponse{}, nil
+}
+
+func (k queryServer) GetStudent(context.Context, *types.GetStudentRequest) (*types.GetStudentResponse, error) {
+	return &types.GetStudentResponse{}, nil
 }
 
 func (k queryServer) GetLeaveRequests(context.Context, *types.GetLeaveRequestsRequest) (*types.GetLeaveApprovesResponse, error) {

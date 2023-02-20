@@ -40,8 +40,8 @@ message AddStudentResponse{}
 message ApplyLeaveRequest {   
     string address = 1;   
     string reason = 2;  
-    google.protobuf.Timestamp from = 3;  
-    google.protobuf.Timestamp to = 4;
+    google.protobuf.Timestamp from = 3 [(gogoproto.stdtime) = true];  
+    google.protobuf.Timestamp to = 4 [(gogoproto.stdtime) = true];
 }
 
 message ApplyLeaveResponse {

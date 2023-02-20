@@ -7,15 +7,16 @@ replace github.com/tendermint/tendermint => github.com/informalsystems/tendermin
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 
 require (
-	github.com/chandiniv1/cosmos-LMS v0.0.0-20230216132719-6c796b145a03
 	github.com/cosmos/cosmos-sdk v0.46.9
 	github.com/cosmos/gogoproto v1.4.4
 	github.com/gogo/protobuf v1.3.2
+	github.com/stretchr/testify v1.8.1
 	google.golang.org/grpc v1.52.3
 	google.golang.org/protobuf v1.28.2-0.20220831092852-f930b1dc76e8
 )
 
 require (
+	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cosmossdk.io/errors v1.0.0-beta.7 // indirect
 	cosmossdk.io/math v1.0.0-beta.3 // indirect
 	filippo.io/edwards25519 v1.0.0-rc.1 // indirect
@@ -61,6 +62,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/petermattis/goid v0.0.0-20180202154549-b0b1615b78e5 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect

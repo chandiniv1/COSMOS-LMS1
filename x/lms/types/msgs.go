@@ -12,9 +12,18 @@ var (
 	_ sdk.Msg = &RegisterAdminRequest{}
 )
 
-func NewAddStudentRequest() *AddStudentRequest {
-	return &AddStudentRequest{}
+func NewAddStudentRequest(admin string, name string, address string, id string) *AddStudentRequest {
+	return &AddStudentRequest{
+		Admin:   admin,
+		Address: address,
+		Name:    name,
+		Id:      id,
+	}
 }
+
+// func NewAddStudentRequest() *AddStudentRequest {
+// 	return &AddStudentRequest{}
+// }
 
 func (msg AddStudentRequest) GetSignBytes() []byte {
 	return []byte{}

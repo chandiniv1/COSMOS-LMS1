@@ -1,8 +1,7 @@
 package keeper
 
 import (
-	"github.com/chandiniv1/cosmos-LMS/x/lms/types"
-	//"github.com/chandiniv1/cosmos-LMS/x/lms/keeper/keeper.go"
+	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	codec "github.com/cosmos/cosmos-sdk/codec"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 
@@ -37,19 +36,73 @@ func NewKeeper(
 // 	store.Set(types.AdminStoreKey((applyleave.Admin,applyleave.LeaveId),string(marshalApplyLeave)))
 // }
 
-func (k Keeper) AddStudent(ctx sdk.Context, addstudent types.AddStudentRequest) error {
+func (k Keeper) AddStd(ctx sdk.Context, addstudent *types.AddStudentRequest) error {
+	
 	store := ctx.KVStore(k.storeKey)
 	// key := types.StudentKey
 
-	k.cdc.MustMarshal(&addstudent)
+	k.cdc.MustMarshal(addstudent)
 
 	marshalAddStudent, err := k.cdc.Marshal(addstudent)
 	if err != nil {
 		return err
 	}
-	store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
-	//store.Set(types.StudentStoreKey((addstudent.Admin,addstudent.Id),string(marshalApplyLeave)))
+	//store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
+	//store.Set(types.StudentStoreKey(addstudent.Address),marshalAddStudent)
+	store.Set(types.StudentStoreKey(addstudent.Id), marshalAddStudent)
+	return nil
 }
+
+func (k Keeper) RegisterAdmin(ctx sdk.Context, registeradminreq *types.RegisterAdminRequest) error {
+	
+	store := ctx.KVStore(k.storeKey)
+	// key := types.StudentKey
+
+	//k.cdc.MustMarshal(registeradminreq)
+
+	marshalAdmin, err := k.cdc.Marshal(registeradminreq)
+	if err != nil {
+		return err
+	}
+	//store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
+	//store.Set(types.StudentStoreKey(addstudent.Address),marshalAddStudent)
+	store.Set(types.AdminStoreKey(registeradminreq.Address), marshalAdmin)
+	return nil
+}
+
+//func (r *types.AddStudentRequest) Validate() error {
+	// if err := validateName(r.Name); err != nil {
+	// 	return err
+	// }
+	// if err := validateSigVerifyCostED25519(p.SigVerifyCostED25519); err != nil {
+	// 	return err
+	// }
+	// if err := validateSigVerifyCostSecp256k1(p.SigVerifyCostSecp256k1); err != nil {
+	// 	return err
+	// }
+	// if err := validateMaxMemoCharacters(p.MaxMemoCharacters); err != nil {
+	// 	return err
+	// }
+	// if err := validateTxSizeCostPerByte(p.TxSizeCostPerByte); err != nil {
+	// 	return err
+	// }
+
+//	return nil
+//}
+
+// func validateName(i interface{}) error {
+// 	v, ok := i.(uint64)
+// 	if !ok {
+// 		return fmt.Errorf("invalid parameter type: %T", i)
+// 	}
+
+// 	if v == 0 {
+// 		return fmt.Errorf("invalid max memo characters: %d", v)
+// 	}
+
+// 	return nil
+// }
+//func GetStudent(ctx sdk.Context,)
 
 //func check(key []byte,storetypes.KVStore,cdc codec.Marshaler)bool{
 //	user1:=store.Get(key)
