@@ -16,7 +16,7 @@ type msgServer struct {
 func (k msgServer) AddStudent(goCtx context.Context, req *types.AddStudentRequest) (*types.AddStudentResponse, error) {
 	ctx:=sdk.UnwrapSDKContext(goCtx)
 	
-	if err := k.AddStd(ctx,req); err != nil {
+	if err := k.AddStdnt(ctx,req); err != nil {
 		return nil, err
 	}
 

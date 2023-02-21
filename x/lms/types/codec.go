@@ -6,17 +6,16 @@ import (
 	// "github.com/cosmos/cosmos-sdk/types/msgservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
-	cryptocodec"github.com/cosmos/cosmos-sdk/crypto/codec"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	authzcodec "github.com/cosmos/cosmos-sdk/x/authz/codec"
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&AddStudentRequest{}, "/leavemanagementsystem", nil)
-	cdc.RegisterConcrete(&RegisterAdminRequest{}, "/leavemanagementsystem", nil)
-	cdc.RegisterConcrete(&ApplyLeaveRequest{}, "/leavemanagementsystem", nil)
-	cdc.RegisterConcrete(&AcceptLeaveRequest{}, "/leavemanagementsystem", nil)
+	cdc.RegisterConcrete(&AddStudentRequest{}, "aa", nil)
+	cdc.RegisterConcrete(&RegisterAdminRequest{}, "abcd", nil)
+	cdc.RegisterConcrete(&ApplyLeaveRequest{}, "aaa", nil)
+	cdc.RegisterConcrete(&AcceptLeaveRequest{}, "aaaa", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -39,5 +38,5 @@ func init() {
 	RegisterLegacyAminoCodec(amino)
 	cryptocodec.RegisterCrypto(amino)
 	sdk.RegisterLegacyAminoCodec(amino)
-	RegisterLegacyAminoCodec(authzcodec.Amino)
+	// RegisterLegacyAminoCodec(authzcodec.Amino)
 }
