@@ -10,10 +10,12 @@ const (
 )
 
 var (
-	AdminKey    = []byte{0x01}
-	StudentKey  = []byte{0x02}
-	LeavesKey   = []byte{0x03}
-	sequenceKey = []byte{0x04}
+	AdminKey   = []byte{0x01}
+	StudentKey = []byte{0x02}
+	//LeavesKey   = []byte{0x03}
+	sequenceKey       = []byte{0x04}
+	AcceptedLeavesKey = []byte{0x05}
+	AppliedLeavesKey  = []byte{0x06}
 )
 
 func AdminStoreKey(address string) []byte {
@@ -37,11 +39,19 @@ func StudentStoreKey(studentID string) []byte {
 // 	return key
 // }
 
-func LeavesStoreKey(admin string,leaveID string) []byte {
-	key := make([]byte, len(LeavesKey)+len(admin)+len(sequenceKey)+len(leaveID))
-	copy(key, LeavesKey)
-	copy(key[len(LeavesKey):], admin)
-	copy(key,sequenceKey)
-	copy(key[len(sequenceKey):],leaveID)
+func AcceptedLeavesStoreKey(admin string, leaveID string) []byte {
+	key := make([]byte, len(AcceptedLeavesKey)+len(admin)+len(sequenceKey)+len(leaveID))
+	copy(key, AcceptedLeavesKey)
+	copy(key[len(AcceptedLeavesKey):], admin)
+	copy(key, sequenceKey)
+	copy(key[len(sequenceKey):], leaveID)
+	return key
+}
+func AppliedLeavesStoreKey(stdntAddress string, leaveID string) []byte {
+	key := make([]byte, len(AppliedLeavesKey)+len(stdntAddress)+len(sequenceKey)+len(leaveID))
+	copy(key, AppliedLeavesKey)
+	copy(key[len(AppliedLeavesKey):], stdntAddress)
+	copy(key, sequenceKey)
+	copy(key[len(sequenceKey):], leaveID)
 	return key
 }

@@ -46,23 +46,28 @@ func (k Keeper) AddStdnt(ctx sdk.Context, addstudent *types.AddStudentRequest) e
 	return nil
 }
 
-func (k Keeper) RegisterAdmin(ctx sdk.Context, registeradminreq *types.RegisterAdminRequest) error {
+func (k Keeper) RgstrAdmin(ctx sdk.Context, registeradminreq *types.RegisterAdminRequest) error {
+	if registeradminreq.Address == "" {
+		return errors.New("Admin address cant be null")
+	} else if registeradminreq.Name == "" {
+		return errors.New("Admin name cant be null")
+	} else {
+		store := ctx.KVStore(k.storeKey)
+		// key := types.StudentKey
 
-	store := ctx.KVStore(k.storeKey)
-	// key := types.StudentKey
+		//k.cdc.MustMarshal(registeradminreq)
 
-	//k.cdc.MustMarshal(registeradminreq)
-
-	marshalAdmin, err := k.cdc.Marshal(registeradminreq)
-	if err != nil {
-		return err
+		marshalAdmin, err := k.cdc.Marshal(registeradminreq)
+		if err != nil {
+			return err
+		}
+		//store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
+		store.Set(types.AdminStoreKey(registeradminreq.Address), marshalAdmin)
 	}
-	//store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
-	store.Set(types.AdminStoreKey(registeradminreq.Address), marshalAdmin)
 	return nil
 }
 
-func (k Keeper) ApplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveRequest) error {
+func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveRequest) error {
 
 	if applyleavereq.Address == "" {
 		return errors.New("Address cant be null")
@@ -72,7 +77,9 @@ func (k Keeper) ApplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveReque
 		return errors.New("From date cant be null")
 	} else if applyleavereq.To == nil {
 		return errors.New("To date cant be null")
-	} else {
+	} else if k.GetStudent(ctx,applyleavereq.Address)==false{
+		return errors.New("No admin present with this address")
+	}else {
 		store := ctx.KVStore(k.storeKey)
 		// key := types.StudentKey
 
@@ -82,42 +89,52 @@ func (k Keeper) ApplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveReque
 		if err != nil {
 			panic(err)
 		}
-		store.Set(types.LeavesStoreKey(applyleavereq.Address, applyleavereq.LeaveId), marshalApplyLeave)
+		store.Set(types.AppliedLeavesStoreKey(applyleavereq.Address, applyleavereq.LeaveId), marshalApplyLeave)
 	}
 	return nil
 }
 
-func (k Keeper) AcceptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequest) error {
+func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequest) error {
 	if acceptleavereq.Admin == "" {
 		return errors.New("Admin cant be null")
 	} else if acceptleavereq.LeaveId == "" {
 		return errors.New("LeaveId cant be null")
 	} else if acceptleavereq.Status == 0 {
 		return errors.New("Status cant be null")
-	} else {
+	} else if k.GetAdmin(ctx,acceptleavereq.LeaveId)==false{
+		return errors.New("Admin does not exist")
+	}else {
 		store := ctx.KVStore(k.storeKey)
 		// key := types.StudentKey
 
 		//k.cdc.MustMarshal(applyleavereq)
-
+		acceptleavereq.Status=types.LeaveStatus_STATUS_ACCEPTED
 		marshalAcceptLeave, err := k.cdc.Marshal(acceptleavereq)
 		if err != nil {
 			panic(err)
 		}
-		store.Set(types.LeavesStoreKey(acceptleavereq.Admin, acceptleavereq.LeaveId), marshalAcceptLeave)
+		store.Set(types.AcceptedLeavesStoreKey(acceptleavereq.Admin, acceptleavereq.LeaveId), marshalAcceptLeave)
 	}
-	return nil
+	return errors.New("stored successfully")
 }
 
-//func check(key []byte,storetypes.KVStore,cdc codec.Marshaler)bool{
-//	user1:=store.Get(key)
-//	if user1==nil{
-//		return false
-//	}
-//	var user map[string]interface{}
-//	err:=cdc.UnmarshalJSON(user1,&user)
-//	if err!=nil{
-//		panic("err")
-//	}
-//	return len(user)>0
-//}
+func (k Keeper) GetAdmin(ctx sdk.Context, adminAddress string) bool {
+	store := ctx.KVStore(k.storeKey)
+	adminname := store.Get(types.AdminStoreKey(adminAddress))
+
+	if adminname == nil {
+		return false
+	}
+	return true
+}
+
+func (k Keeper) GetStudent(ctx sdk.Context,studentID string) bool{
+	store:=ctx.KVStore(k.storeKey)
+	studentName:=store.Get(types.StudentStoreKey(studentID))
+	if studentName==nil{
+		return false
+	}
+	return true
+}
+
+

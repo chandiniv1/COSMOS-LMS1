@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ types.MsgServer = msgServer{}
@@ -14,9 +15,9 @@ type msgServer struct {
 }
 
 func (k msgServer) AddStudent(goCtx context.Context, req *types.AddStudentRequest) (*types.AddStudentResponse, error) {
-	ctx:=sdk.UnwrapSDKContext(goCtx)
-	
-	if err := k.AddStdnt(ctx,req); err != nil {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.AddStdnt(ctx, req); err != nil {
 		return nil, err
 	}
 
@@ -26,39 +27,33 @@ func (k msgServer) AddStudent(goCtx context.Context, req *types.AddStudentReques
 	// 	name:Name,
 	// 	id:Id,
 	// })
-	return &types.AddStudentResponse{},nil
-	
+	return &types.AddStudentResponse{}, nil
+
 }
 
-func (k msgServer) ApplyLeave(c context.Context, a *types.ApplyLeaveRequest) (*types.ApplyLeaveResponse, error) {
-	stdnt := types.ApplyLeaveRequest{}
-	k.cdc.MustMarshal(&stdnt)
+func (k msgServer) ApplyLeave(goCtx context.Context, req *types.ApplyLeaveRequest) (*types.ApplyLeaveResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if err := k.AplyLeave(ctx, req); err != nil {
+		return nil, err
+	}
 	return &types.ApplyLeaveResponse{}, nil
 }
 
-func (k msgServer) AcceptLeave(c context.Context,a *types.AcceptLeaveRequest) (*types.AcceptLeaveResponse, error) {
+func (k msgServer) AcceptLeave(goCtx context.Context, req *types.AcceptLeaveRequest) (*types.AcceptLeaveResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.AcptLeave(ctx, req); err != nil {
+		return nil, err
+	}
 	return &types.AcceptLeaveResponse{}, nil
 }
 
-func (k msgServer) RegisterAdmin(c context.Context,a *types.RegisterAdminRequest) (*types.RegisterAdminResponse, error) {
+func (k msgServer) RegisterAdmin(goCtx context.Context, req *types.RegisterAdminRequest) (*types.RegisterAdminResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := k.RgstrAdmin(ctx, req); err != nil {
+		return nil, err
+	}
 	return &types.RegisterAdminResponse{}, nil
 }
-
-
-// admin, err := sdk.AccAddressFromBech32(msg.Admin)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// address, err := sdk.AccAddressFromBech32(msg.Address)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// name, err := sdk.AccAddressFromBech32(msg.Name)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// id, err := sdk.AccAddressFromBech32(msg.Id)
-	// if err != nil {
-	// 	return nil, err
-	// }
