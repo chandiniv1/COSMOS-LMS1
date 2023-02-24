@@ -13,6 +13,7 @@ import "cosmos/lms/v1beta1/tx.proto";
 // }
 message GetStudentRequest{
     string id=1;
+    string Address=2;
 }
 
 message GetStudentResponse{

@@ -1,10 +1,13 @@
 package keeper
 
 import (
+	//"bytes"
 	"context"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
+	//sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	//"github.com/cosmos/cosmos-sdk/store/prefix"
 )
 
 type queryServer struct {
@@ -19,14 +22,23 @@ func (k queryServer) GetStudents(goCtx context.Context,req *types.GetStudentsReq
 		return nil,sdkerrors.ErrInvalidRequest.Wrap("empty request")
 	}
 
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	store := ctx.KVStore(k.storeKey)
+	//ctx := sdk.UnwrapSDKContext(goCtx)
+	//store := ctx.KVStore(k.storeKey)
+
+	// studentStore:=prefix.NewStore(store,types.StudentKey)
+
+	// var students []*types.Student
 
 
 	return &types.GetStudentsResponse{}, nil
 }
 
-func (k queryServer) GetStudent(context.Context, *types.GetStudentRequest) (*types.GetStudentResponse, error) {
+func (k queryServer) GetStudent(goCtx context.Context,req *types.GetStudentRequest) (*types.GetStudentResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// if err := k.GetStudnt(ctx, req.Address); err != nil {
+	// 	return nil,err
+	// }
 	return &types.GetStudentResponse{}, nil
 }
 

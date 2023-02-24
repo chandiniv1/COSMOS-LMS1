@@ -15,39 +15,63 @@
 package cmd
 
 import (
-	"fmt"
-
-	"github.com/spf13/cobra"
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
-
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/spf13/cobra"
 )
 
 // txCmd represents the tx command
-var addStudentCmd = &cobra.Command{
-	Use:   "add-user",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+// var addStudentCmd = &cobra.Command{
+// 	Use:   "add-user",
+// 	Short: "A brief description of your command",
+// 	Long: `A longer description that spans multiple lines and likely contains examples
+// and usage of using your command. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Println("AddUser called")
-		student:=types.AddStudentRequest{
-			Admin: "vitwit",
-			Address: "00x01",
-			Name: "chandini",
-			Id: "0005",
-		}
-		msgClient:=types.NewMsgClient()
+// Cobra is a CLI library for Go that empowers applications.
+// This application is a tool to generate the needed files
+// to quickly create a Cobra application.`,
+// 	RunE: func(cmd *cobra.Command, args []string) error {
+// 		fmt.Println("AddUser called")
+// 		clientCtx, err := client.GetClientTxContext(cmd)
 
+// 		admin := args[0]
+// 		address := args[1]
+// 		name := args[2]
+// 		id := args[3]
 
-	},
+// 		msgClient := types.NewAddStudentRequest(admin, address, name, id)
+// 		return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
+// 	},
+
+// 	return cmd
+// }
+func AddStudentCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-user",
+		Short: "A brief description of your command",
+		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				panic(err)
+			}
+
+			admin := args[0]
+			address := args[1]
+			name := args[2]
+			id := args[3]
+
+			msgClient := types.NewAddStudentRequest(admin, address, name, id)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
+		},
+	}
+	return cmd
 }
 
 func init() {
-	rootCmd.AddCommand(addStudentCmd)
+	rootCmd.AddCommand(AddStudentCmd())
 
 	// Here you will define your flags and configuration settings.
 

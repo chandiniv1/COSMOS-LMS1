@@ -5,11 +5,11 @@ package types
 // )
 
 //NewGenesisState creates new GenesisState object
-func NewGenesisState(responses []*AcceptLeaveRequest) *GenesisState {
-	return &GenesisState{
-		Admin:responses,
-	}
-}
+// func NewGenesisState(responses []*AcceptLeaveRequest) *GenesisState {
+// 	return &GenesisState{
+// 		admin:
+// 	}
+// }
 
 // // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data *GenesisState) error {

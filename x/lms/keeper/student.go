@@ -5,26 +5,13 @@ import (
 
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	//"fmt"
 )
 
-//var _ types.ApplyLeave = *types.NewApplyLeaveRequest()
-//var _ types.AddStudent = *types.AddStudentRequest()
+//<-------------------ADD STUDENT-------------------------------------------->//
 
-// func (k Keeper) ApplyLeave(ctx sdk.Context,applyleave types.AcceptLeaveRequest) error{
-// 	store:=ctx.KVStore(k.storeKey)
-// 	key:=types.LeavesKey
-// 	// Leaveskey:=applyleave.GetLeaveId()
-// 	marshalApplyLeave,err:=k.cdc.Marshal(applyleave)
-// 	// value:= k.cdc.MustMarshalJSON(&applyleave)
-// 	// //store.Set(key,value)
-// 	if err!=nil{
-// 		return err
-// 	}
-// 	store.Set(types.AdminStoreKey((applyleave.Admin,applyleave.LeaveId),string(marshalApplyLeave)))
-// }
 
 func (k Keeper) AddStdnt(ctx sdk.Context, addstudent *types.AddStudentRequest) error {
-
 	if addstudent.Name == "" {
 		return errors.New("name cant be null")
 	} else if addstudent.Address == "" {
@@ -33,18 +20,20 @@ func (k Keeper) AddStdnt(ctx sdk.Context, addstudent *types.AddStudentRequest) e
 		return errors.New("Id cant be null")
 	} else {
 		store := ctx.KVStore(k.storeKey)
-		// key := types.StudentKey
-
-		k.cdc.MustMarshal(addstudent)
-
 		marshalAddStudent, err := k.cdc.Marshal(addstudent)
 		if err != nil {
 			panic(err)
+		}else{
+			if k.CheckStudent(ctx,addstudent.Address)!=false{
+				return errors.New("Student already exist")
+			}
+			store.Set(types.StudentStoreKey(addstudent.Id), marshalAddStudent)
 		}
-		store.Set(types.StudentStoreKey(addstudent.Id), marshalAddStudent)
 	}
 	return nil
 }
+
+//<----------------------Register Admin---------------------------------->//
 
 func (k Keeper) RgstrAdmin(ctx sdk.Context, registeradminreq *types.RegisterAdminRequest) error {
 	if registeradminreq.Address == "" {
@@ -53,19 +42,22 @@ func (k Keeper) RgstrAdmin(ctx sdk.Context, registeradminreq *types.RegisterAdmi
 		return errors.New("Admin name cant be null")
 	} else {
 		store := ctx.KVStore(k.storeKey)
-		// key := types.StudentKey
-
-		//k.cdc.MustMarshal(registeradminreq)
-
+	
 		marshalAdmin, err := k.cdc.Marshal(registeradminreq)
 		if err != nil {
 			return err
+		}else{
+			if k.CheckAdmin(ctx,registeradminreq.Address)!=false{
+				return errors.New("Admin already exist")
+			}
+			store.Set(types.AdminStoreKey(registeradminreq.Address), marshalAdmin)
 		}
-		//store.Set(types.StudentStoreKey((addstudent.Admin), marshalAddStudent))
-		store.Set(types.AdminStoreKey(registeradminreq.Address), marshalAdmin)
 	}
 	return nil
 }
+
+//<-----------------APPLY LEAVE-------------------------------------->//
+
 
 func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveRequest) error {
 
@@ -77,14 +69,10 @@ func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveReques
 		return errors.New("From date cant be null")
 	} else if applyleavereq.To == nil {
 		return errors.New("To date cant be null")
-	} else if k.GetStudent(ctx,applyleavereq.Address)==false{
-		return errors.New("No admin present with this address")
+	} else if k.CheckStudent(ctx,applyleavereq.Address)==false{
+		return errors.New("No student present with this address")
 	}else {
 		store := ctx.KVStore(k.storeKey)
-		// key := types.StudentKey
-
-		//k.cdc.MustMarshal(applyleavereq)
-
 		marshalApplyLeave, err := k.cdc.Marshal(applyleavereq)
 		if err != nil {
 			panic(err)
@@ -94,6 +82,9 @@ func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveReques
 	return nil
 }
 
+//<-----------------ACCEPT LEAVE------------------------------------>//
+
+
 func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequest) error {
 	if acceptleavereq.Admin == "" {
 		return errors.New("Admin cant be null")
@@ -101,13 +92,10 @@ func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequ
 		return errors.New("LeaveId cant be null")
 	} else if acceptleavereq.Status == 0 {
 		return errors.New("Status cant be null")
-	} else if k.GetAdmin(ctx,acceptleavereq.LeaveId)==false{
+	} else if k.CheckAdmin(ctx,acceptleavereq.Admin)==false{
 		return errors.New("Admin does not exist")
 	}else {
 		store := ctx.KVStore(k.storeKey)
-		// key := types.StudentKey
-
-		//k.cdc.MustMarshal(applyleavereq)
 		acceptleavereq.Status=types.LeaveStatus_STATUS_ACCEPTED
 		marshalAcceptLeave, err := k.cdc.Marshal(acceptleavereq)
 		if err != nil {
@@ -118,7 +106,10 @@ func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequ
 	return errors.New("stored successfully")
 }
 
-func (k Keeper) GetAdmin(ctx sdk.Context, adminAddress string) bool {
+//<---------------CHECK ADMIN------------------------------------->//
+
+
+func (k Keeper) CheckAdmin(ctx sdk.Context, adminAddress string) bool {
 	store := ctx.KVStore(k.storeKey)
 	adminname := store.Get(types.AdminStoreKey(adminAddress))
 
@@ -128,13 +119,51 @@ func (k Keeper) GetAdmin(ctx sdk.Context, adminAddress string) bool {
 	return true
 }
 
-func (k Keeper) GetStudent(ctx sdk.Context,studentID string) bool{
+//<-----------------CHECK STUDENT------------------------------>//
+
+func (k Keeper) CheckStudent(ctx sdk.Context,studentAddress string) bool{
 	store:=ctx.KVStore(k.storeKey)
-	studentName:=store.Get(types.StudentStoreKey(studentID))
+	studentName:=store.Get(types.StudentStoreKey(studentAddress))
+	//fmt.Println("studentname:",studentName)
 	if studentName==nil{
 		return false
 	}
 	return true
 }
+
+//<-----------------GET STUDENT------------------------------->//
+
+
+func (k Keeper) GetStudnt(ctx sdk.Context,Address string) []byte{
+	if _, err := sdk.AccAddressFromBech32(Address); err != nil {
+		panic(err)
+	}
+	store:=ctx.KVStore(k.storeKey)
+	return store.Get(types.StudentStoreKey(Address))
+
+}
+
+//<---------------GET ADMIN------------------------------------>//
+
+
+func (k Keeper) GetAdmin(ctx sdk.Context,Address string) []byte{
+	if _, err := sdk.AccAddressFromBech32(Address); err != nil {
+		panic(err)
+	}
+	store:=ctx.KVStore(k.storeKey)
+	return store.Get(types.AdminStoreKey(Address))
+
+}
+
+
+func (k Keeper) GetLeaveAppliedStudent(ctx sdk.Context,Address string,leaveID string) []byte{
+	// if _, err := sdk.AccAddressFromBech32(Address); err != nil {
+	// 	panic(err)
+	// }
+	store:=ctx.KVStore(k.storeKey)
+	return store.Get(types.AppliedLeavesStoreKey(Address,leaveID))
+}
+
+
 
 
