@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"time"
 )
 
 var (
@@ -83,8 +84,14 @@ func (msg AcceptLeaveRequest) ValidateBasic() error {
 	}
 }
 
-func NewApplyLeaveRequest() *ApplyLeaveRequest {
-	return &ApplyLeaveRequest{}
+func NewApplyLeaveRequest(address string,reason string,leaveID string,from *time.Time,to *time.Time ) *ApplyLeaveRequest {
+	return &ApplyLeaveRequest{
+		Address: address,
+		Reason: reason,
+		LeaveId: leaveID,
+		From: from,
+		To: to,
+	}
 }
 
 func (msg ApplyLeaveRequest) GetSignBytes() []byte {
@@ -114,8 +121,11 @@ func (msg ApplyLeaveRequest) ValidateBasic() error {
 	}
 }
 
-func NewRegisterAdminRequest() *RegisterAdminRequest {
-	return &RegisterAdminRequest{}
+func NewRegisterAdminRequest(address string,name string) *RegisterAdminRequest {
+	return &RegisterAdminRequest{
+		Address: address,
+		Name:    name,
+	}
 }
 
 func (msg RegisterAdminRequest) GetSignBytes() []byte {
