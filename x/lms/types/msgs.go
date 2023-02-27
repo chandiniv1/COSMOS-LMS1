@@ -55,8 +55,12 @@ func (msg AddStudentRequest) ValidateBasic() error {
 	}
 }
 
-func NewAcceptLeaveRequest() *AcceptLeaveRequest {
-	return &AcceptLeaveRequest{}
+func NewAcceptLeaveRequest(admin string,leaveID string,status LeaveStatus) *AcceptLeaveRequest {
+	return &AcceptLeaveRequest{
+		 Admin: admin,
+		 LeaveId: leaveID,
+		 Status:  status,
+	}
 }
 
 func (msg AcceptLeaveRequest) GetSignBytes() []byte {
@@ -100,7 +104,7 @@ func (msg ApplyLeaveRequest) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg ApplyLeaveRequest) GetSigners() []sdk.AccAddress {
-	fromAddress, _ := sdk.AccAddressFromBech32("hii")
+	fromAddress, _ := sdk.AccAddressFromBech32(msg.Address)
 	return []sdk.AccAddress{fromAddress}
 }
 
@@ -134,7 +138,7 @@ func (msg RegisterAdminRequest) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg RegisterAdminRequest) GetSigners() []sdk.AccAddress {
-	fromAddress, _ := sdk.AccAddressFromBech32("hii")
+	fromAddress, _ := sdk.AccAddressFromBech32(msg.Address)
 	return []sdk.AccAddress{fromAddress}
 }
 

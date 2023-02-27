@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/keeper"
@@ -25,8 +24,6 @@ type TestSuite struct {
 }
 
 func (s *TestSuite) SetupTest() {
-
-	fmt.Println("I am in setup")
 
 	db := dbm.NewMemDB()
 	cms := store.NewCommitMultiStore(db)
@@ -148,23 +145,23 @@ func (s *TestSuite) TestApplyLeave() {
 	s.Require().NoError(err)
 }
 
-func (s *TestSuite) TestAcceptLeave(){
-	tests:=[]struct{
-		Admin string
+func (s *TestSuite) TestAcceptLeave() {
+	tests := []struct {
+		Admin   string
 		LeaveID string
-		Status types.LeaveStatus
-		res string
+		Status  types.LeaveStatus
+		res     string
 	}{
-		{"vitwit","0001",0,"Status cant be null"},
-		{"vitwit","",types.LeaveStatus_STATUS_ACCEPTED,"LeaveId cant be null"},
-		{"","0001",types.LeaveStatus_STATUS_ACCEPTED,"Admin cant be null"},
-		{"vitwit","0001",types.LeaveStatus_STATUS_ACCEPTED,"stored successfully"},
+		{"vitwit", "0001", 0, "Status cant be null"},
+		{"vitwit", "", types.LeaveStatus_STATUS_ACCEPTED, "LeaveId cant be null"},
+		{"", "0001", types.LeaveStatus_STATUS_ACCEPTED, "Admin cant be null"},
+		{"sita", "0001", types.LeaveStatus_STATUS_ACCEPTED, "Admin does not exist"},
 	}
 	for _, test := range tests {
 		err := s.stdntKeeper.AcptLeave(s.ctx, &types.AcceptLeaveRequest{
-			Admin: test.Admin,
+			Admin:   test.Admin,
 			LeaveId: test.LeaveID,
-			Status:test.Status,
+			Status:  test.Status,
 		})
 		s.Require().EqualError(err, test.res)
 	}

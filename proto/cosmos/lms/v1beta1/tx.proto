@@ -40,6 +40,13 @@ message AddStudentRequest {
     string id = 4;
 }
 
+message AddStudentsRequest{
+    string admin= 1;
+    repeated Student students=2;
+}
+
+message AddStudentsResponse{}
+
 message AddStudentResponse{}
 
 message ApplyLeaveRequest {   

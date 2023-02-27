@@ -1,17 +1,3 @@
-// Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
@@ -36,7 +22,7 @@ func GetTxCmd() *cobra.Command {
 		RegisterAdminCmd(),
 		AddStudentCmd(),
 		AcceptLeaveCmd(),
-		//NewCmdApplyLeave(),
+		ApplyLeaveCmd(),
 	)
 
 	return studentTxCmd
@@ -44,7 +30,7 @@ func GetTxCmd() *cobra.Command {
 
 func AddStudentCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-user",
+		Use:   "add-student",
 		Short: "A brief description of your command",
 		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
 
@@ -68,7 +54,7 @@ func AddStudentCmd() *cobra.Command {
 
 func RegisterAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-user",
+		Use:   "register-admin",
 		Short: "A brief description of your command",
 		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
 
@@ -88,9 +74,9 @@ func RegisterAdminCmd() *cobra.Command {
 	return cmd
 }
 
-func AcceptLeaveCmd() *cobra.Command {
+func ApplyLeaveCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-user",
+		Use:   "apply-leave",
 		Short: "A brief description of your command",
 		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
 
@@ -117,9 +103,34 @@ func AcceptLeaveCmd() *cobra.Command {
 	return cmd
 }
 
+func AcceptLeaveCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "Accept-leave",
+		Short: "A brief description of your command",
+		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				panic(err)
+			}
+
+			admin := args[0]
+			leaveID := args[1]
+			//status:=args[2]
+
+			msgClient := types.NewAcceptLeaveRequest(admin, leaveID, types.LeaveStatus_STATUS_ACCEPTED)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
+		},
+	}
+	return cmd
+}
+
 func init() {
 	rootCmd.AddCommand(AddStudentCmd())
 	rootCmd.AddCommand(RegisterAdminCmd())
+	rootCmd.AddCommand(ApplyLeaveCmd())
+	rootCmd.AddCommand(AcceptLeaveCmd())
 
 	// Here you will define your flags and configuration settings.
 

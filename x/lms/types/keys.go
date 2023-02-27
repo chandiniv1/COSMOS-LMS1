@@ -5,30 +5,31 @@ const (
 
 	StoreKey = ModuleName
 
-	// RouterKey = ModuleName
-	// QuerierRoute = ModuleName
+	RouterKey    = ModuleName
+	QuerierRoute = ModuleName
 )
 
 var (
-	AdminKey   = []byte{0x01}
+	adminKey   = []byte{0x01}
 	StudentKey = []byte{0x02}
 	//LeavesKey   = []byte{0x03}
-	sequenceKey       = []byte{0x04}
+	CounterKey        = []byte{0x03}
+	SequenceKey       = []byte{0x04}
 	AcceptedLeavesKey = []byte{0x05}
 	AppliedLeavesKey  = []byte{0x06}
 )
 
 func AdminStoreKey(address string) []byte {
-	key := make([]byte, len(AdminKey)+len(address))
-	copy(key, AdminKey)
-	copy(key[len(AdminKey):], address)
+	key := make([]byte, len(adminKey)+len(address))
+	copy(key, adminKey)
+	copy(key[len(adminKey):], []byte(address))
 	return key
 }
 
 func StudentStoreKey(studentID string) []byte {
 	key := make([]byte, len(StudentKey)+len(studentID))
 	copy(key, StudentKey)
-	copy(key[len(StudentKey):], studentID)
+	copy(key[len(StudentKey):], []byte(studentID))
 	return key
 }
 
@@ -40,18 +41,27 @@ func StudentStoreKey(studentID string) []byte {
 // }
 
 func AcceptedLeavesStoreKey(admin string, leaveID string) []byte {
-	key := make([]byte, len(AcceptedLeavesKey)+len(admin)+len(sequenceKey)+len(leaveID))
+	key := make([]byte, len(AcceptedLeavesKey)+len(admin)+len(SequenceKey)+len(leaveID))
 	copy(key, AcceptedLeavesKey)
-	copy(key[len(AcceptedLeavesKey):], admin)
-	copy(key, sequenceKey)
-	copy(key[len(sequenceKey):], leaveID)
+	copy(key[len(AcceptedLeavesKey):], []byte(admin))
+	copy(key[len(AcceptedLeavesKey)+len(admin):], SequenceKey)
+	// copy(key, SequenceKey)
+	copy(key[len(AcceptedLeavesKey)+len(admin)+len(SequenceKey):], []byte(leaveID))
+	// copy(key[len(SequenceKey):], leaveID)
 	return key
 }
-func AppliedLeavesStoreKey(stdntAddress string, leaveID string) []byte {
-	key := make([]byte, len(AppliedLeavesKey)+len(stdntAddress)+len(sequenceKey)+len(leaveID))
+
+func AppliedLeavesStoreKey(leaveID string, leavesCount string) []byte {
+	key := make([]byte, len(AppliedLeavesKey)+len(leaveID)+len(leavesCount))
 	copy(key, AppliedLeavesKey)
-	copy(key[len(AppliedLeavesKey):], stdntAddress)
-	copy(key, sequenceKey)
-	copy(key[len(sequenceKey):], leaveID)
+	copy(key[len(AppliedLeavesKey):], []byte(leaveID))
+	copy(key[len(AppliedLeavesKey)+len(leaveID):], []byte(leavesCount))
+	return key
+}
+
+func LeavesCounterKey(id string) []byte {
+	key := make([]byte, len(CounterKey)+len(id))
+	copy(key, CounterKey)
+	copy(key[len(CounterKey):], []byte(id))
 	return key
 }

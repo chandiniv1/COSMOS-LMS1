@@ -20,6 +20,14 @@ message GetStudentResponse{
     Student student=1;
 }
 
+message GetAdminRequest{
+    string Address=1;
+}
+
+message GetAdminResponse{
+    Admin admin=1;
+}
+
 message GetStudentsRequest{
     
 }
@@ -47,9 +55,10 @@ message GetLeaveApprovesResponse{
 
 service Query{
     rpc GetStudents(GetStudentsRequest) returns (GetStudentsResponse){};
-    rpc GetStudent(GetStudentRequest) returns (GetStudentResponse){};
+    rpc GetStudent(GetStudentRequest) returns (GetStudentResponse);
     rpc GetLeaveRequests(GetLeaveRequestsRequest) returns (GetLeaveApprovesResponse){};
     rpc GetLeaveApproves(GetLeaveApprovesRequest) returns (GetLeaveApprovesResponse){};
+    rpc GetAdmin(GetAdminRequest) returns (GetAdminResponse);
 }
 
 
