@@ -158,7 +158,7 @@ func (k Keeper) GetStdnt(ctx sdk.Context, address string) (req types.Student, er
 
 //<---------------GET ADMIN------------------------------------>//
 
-func (k Keeper) GetAdmin(ctx sdk.Context, address string) []byte {
+func (k Keeper) GetAdmn(ctx sdk.Context, address string) []byte {
 	if _, err := sdk.AccAddressFromBech32(address); err != nil {
 		panic(err)
 	}

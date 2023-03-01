@@ -50,7 +50,6 @@ func (s *TestSuite) TestAddStudent() {
 		Id      string
 		Res     string
 	}{
-		// {"0001", "vitwit", "apple", "1001", nil},
 		{"00012", "mango", "", "8723", "name cant be null"},
 		{"00003", "mango", "apple", "", "Id cant be null"},
 		{"", "mango", "apple", "0003", "address cant be null"},

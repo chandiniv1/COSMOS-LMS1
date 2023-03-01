@@ -7,14 +7,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var _ types.MsgServer = msgServer{}
+var _ types.MsgServer = Keeper{}
 
 type msgServer struct {
 	Keeper
 	types.UnimplementedMsgServer
 }
 
-func (k msgServer) AddStudent(goCtx context.Context, req *types.AddStudentRequest) (*types.AddStudentResponse, error) {
+func (k Keeper) AddStudent(goCtx context.Context, req *types.AddStudentRequest) (*types.AddStudentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.AddStdnt(ctx, req); err != nil {
@@ -31,7 +31,7 @@ func (k msgServer) AddStudent(goCtx context.Context, req *types.AddStudentReques
 
 }
 
-func (k msgServer) ApplyLeave(goCtx context.Context, req *types.ApplyLeaveRequest) (*types.ApplyLeaveResponse, error) {
+func (k Keeper) ApplyLeave(goCtx context.Context, req *types.ApplyLeaveRequest) (*types.ApplyLeaveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.AplyLeave(ctx, req); err != nil {
@@ -40,7 +40,7 @@ func (k msgServer) ApplyLeave(goCtx context.Context, req *types.ApplyLeaveReques
 	return &types.ApplyLeaveResponse{}, nil
 }
 
-func (k msgServer) AcceptLeave(goCtx context.Context, req *types.AcceptLeaveRequest) (*types.AcceptLeaveResponse, error) {
+func (k Keeper) AcceptLeave(goCtx context.Context, req *types.AcceptLeaveRequest) (*types.AcceptLeaveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.AcptLeave(ctx, req); err != nil {
@@ -49,7 +49,7 @@ func (k msgServer) AcceptLeave(goCtx context.Context, req *types.AcceptLeaveRequ
 	return &types.AcceptLeaveResponse{}, nil
 }
 
-func (k msgServer) RegisterAdmin(goCtx context.Context, req *types.RegisterAdminRequest) (*types.RegisterAdminResponse, error) {
+func (k Keeper) RegisterAdmin(goCtx context.Context, req *types.RegisterAdminRequest) (*types.RegisterAdminResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.RgstrAdmin(ctx, req); err != nil {

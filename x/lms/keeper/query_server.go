@@ -13,9 +13,9 @@ type queryServer struct {
 	types.UnimplementedQueryServer
 }
 
-var _ types.QueryServer = queryServer{}
+var _ types.QueryServer = Keeper{}
 
-func (k queryServer) GetStudents(goCtx context.Context, req *types.GetStudentsRequest) (*types.GetStudentsResponse, error) {
+func (k Keeper) GetStudents(goCtx context.Context, req *types.GetStudentsRequest) (*types.GetStudentsResponse, error) {
 	if req == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty request")
 	}
@@ -25,19 +25,19 @@ func (k queryServer) GetStudents(goCtx context.Context, req *types.GetStudentsRe
 	return &types.GetStudentsResponse{}, nil
 }
 
-func (k queryServer) GetStudent(goCtx context.Context, req *types.GetStudentRequest) (*types.GetStudentResponse, error) {
+func (k Keeper) GetStudent(goCtx context.Context, req *types.GetStudentRequest) (*types.GetStudentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	k.GetStdnt(ctx, req.Address)
 	return &types.GetStudentResponse{}, nil
 }
 
-func (k queryServer) GetAdmin(goCtx context.Context, req *types.GetAdminRequest) (*types.GetAdminResponse, error) {
+func (k Keeper) GetAdmin(goCtx context.Context, req *types.GetAdminRequest) (*types.GetAdminResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.GetStdnt(ctx, req.Address)
+	k.GetAdmn(ctx, req.Address)
 	return &types.GetAdminResponse{}, nil
 }
 
-func (k queryServer) GetLeaveRequests(goCtx context.Context, req *types.GetLeaveRequestsRequest) (*types.GetLeaveApprovesResponse, error) {
+func (k Keeper) GetLeaveRequests(goCtx context.Context, req *types.GetLeaveRequestsRequest) (*types.GetLeaveApprovesResponse, error) {
 	if req == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty request")
 	}
@@ -46,7 +46,7 @@ func (k queryServer) GetLeaveRequests(goCtx context.Context, req *types.GetLeave
 	return &types.GetLeaveApprovesResponse{}, nil
 }
 
-func (k queryServer) GetLeaveApproves(goCtx context.Context, req *types.GetLeaveApprovesRequest) (*types.GetLeaveApprovesResponse, error) {
+func (k Keeper) GetLeaveApproves(goCtx context.Context, req *types.GetLeaveApprovesRequest) (*types.GetLeaveApprovesResponse, error) {
 	if req == nil {
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty request")
 	}

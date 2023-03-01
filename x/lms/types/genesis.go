@@ -21,29 +21,4 @@ func DefaultGenesisState() *GenesisState {
 	return &GenesisState{}
 }
 
-// var _ cdctypes.UnpackInterfacesMessage = GenesisState{}
-
-// // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-// func (data GenesisState) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
-// 	for _, a := range data.Student {
-// 		err := a.UnpackInterfaces(unpacker)
-// 		if err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return nil
-// }
-
-// // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-// func (msg GrantAuthorization) UnpackInterfaces(unpacker cdctypes.AnyUnpacker) error {
-// 	var a Authorization
-// 	return unpacker.UnpackAny(msg.Authorization, &a)
-// }
-
-// func ValidateGenesis(data GenesisState) error {
-// 	if err := data.; err != nil {
-// 		return err
-// 	}
-
-	
-// }
+// func InitGenesis()

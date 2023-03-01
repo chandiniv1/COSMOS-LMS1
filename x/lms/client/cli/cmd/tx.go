@@ -31,8 +31,8 @@ func GetTxCmd() *cobra.Command {
 func AddStudentCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add-student",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Short: "AddStudentCmd requests to add the student with the given details",
+		Long:  `It gives the details of admin,address,name,id in order to add a  student`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -55,8 +55,8 @@ func AddStudentCmd() *cobra.Command {
 func RegisterAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-admin",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Short: "RegisterAdminCmd requests to register a admin with the given ddetails",
+		Long:  `It gives address and name in order to register the admin`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -77,8 +77,8 @@ func RegisterAdminCmd() *cobra.Command {
 func ApplyLeaveCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "apply-leave",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Short: "ApplyLeaveCmd requests to apply a leave for the students with the given details",
+		Long:  `It gives address,reason,leaveID,from_date,to_date in order to apply leave`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -106,8 +106,8 @@ func ApplyLeaveCmd() *cobra.Command {
 func AcceptLeaveCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "Accept-leave",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Short: "AcceptLeaveCmd requests to accept a leave for the students with the given details",
+		Long:  `It requests with the params such as admin and leaveID `,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -119,7 +119,7 @@ func AcceptLeaveCmd() *cobra.Command {
 			leaveID := args[1]
 			//status:=args[2]
 
-			msgClient := types.NewAcceptLeaveRequest(admin, leaveID, types.LeaveStatus_STATUS_ACCEPTED)
+			msgClient := types.NewAcceptLeaveRequest(admin, leaveID, types.LeaveStatus_STATUS_UNDEFINED)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}
@@ -132,13 +132,4 @@ func init() {
 	rootCmd.AddCommand(ApplyLeaveCmd())
 	rootCmd.AddCommand(AcceptLeaveCmd())
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// txCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// txCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

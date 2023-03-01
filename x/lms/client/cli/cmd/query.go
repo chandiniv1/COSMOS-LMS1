@@ -1,41 +1,11 @@
-// Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 package cmd
 
 import (
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
 
 	"github.com/spf13/cobra"
 )
-
-// queryCmd represents the query command
-// var queryCmd = &cobra.Command{
-// 	Use:   "query",
-// 	Short: "A brief description of your command",
-// 	Long: `A longer description that spans multiple lines and likely contains examples
-// and usage of using your command. For example:
-
-// Cobra is a CLI library for Go that empowers applications.
-// This application is a tool to generate the needed files
-// to quickly create a Cobra application.`,
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		fmt.Println("query called")
-// 	},
-// }
 
 func GetQueryCmd() *cobra.Command {
 	queryTxCmd := &cobra.Command{
@@ -48,6 +18,9 @@ func GetQueryCmd() *cobra.Command {
 	queryTxCmd.AddCommand(
 		GetStudentCmd(),
 		GetAdminCmd(),
+		GetStudentsCmd(),
+		GetLeaveRequestListCmd(),
+		GetLeaveApprovesListCmd(),
 	)
 
 	return queryTxCmd
@@ -60,16 +33,25 @@ func GetStudentCmd() *cobra.Command {
 		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
+			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				panic(err)
 			}
 
-			id := args[0]
-			address := args[1]
+			student := types.GetStudentRequest{
+				Id:      args[0],
+				Address: args[1],
+			}
 
-			msgClient := types.NewGetStudentRequest(id, address)
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetStudent(cmd.Context(), &student)
+
+			if err != nil {
+				panic(err)
+			}
+
+			return clientCtx.PrintProto(res)
+
 		},
 	}
 	return cmd
@@ -82,15 +64,87 @@ func GetAdminCmd() *cobra.Command {
 		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
+			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				panic(err)
 			}
+			admin := types.GetAdminRequest{
+				Address: args[0],
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetAdmin(cmd.Context(), &admin)
 
-			address := args[0]
+			if err != nil {
+				panic(err)
+			}
+			return clientCtx.PrintProto(res)
 
-			msgClient := types.NewGetAdminRequest(address)
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
+		},
+	}
+	return cmd
+}
+
+func GetStudentsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-student",
+		Short: "A brief description of your command",
+		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				panic(err)
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetStudents(cmd.Context(), &types.GetStudentsRequest{})
+			if err != nil {
+				panic(err)
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	return cmd
+}
+
+func GetLeaveRequestListCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-student",
+		Short: "A brief description of your command",
+		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				panic(err)
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetLeaveRequests(cmd.Context(), &types.GetLeaveRequestsRequest{})
+			if err != nil {
+				panic(err)
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+	return cmd
+}
+
+func GetLeaveApprovesListCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add-student",
+		Short: "A brief description of your command",
+		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				panic(err)
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetLeaveApproves(cmd.Context(), &types.GetLeaveApprovesRequest{})
+			if err != nil {
+				panic(err)
+			}
+			return clientCtx.PrintProto(res)
 		},
 	}
 	return cmd
@@ -99,5 +153,9 @@ func GetAdminCmd() *cobra.Command {
 func init() {
 	rootCmd.AddCommand(GetStudentCmd())
 	rootCmd.AddCommand(GetAdminCmd())
+	rootCmd.AddCommand(GetStudentsCmd())
+	rootCmd.AddCommand(GetLeaveRequestListCmd())
+	rootCmd.AddCommand(GetLeaveApprovesListCmd())
+
 	// queryCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -3,6 +3,9 @@ syntax = "proto3";
 option go_package="x/lms/types";
 
 import "cosmos/lms/v1beta1/tx.proto";
+import "google/api/annotations.proto" ;
+
+
 
 // import "google/protobuf/timestamp.proto";
 
@@ -54,9 +57,13 @@ message GetLeaveApprovesResponse{
 }
 
 service Query{
-    rpc GetStudents(GetStudentsRequest) returns (GetStudentsResponse){};
+    rpc GetStudents(GetStudentsRequest) returns (GetStudentsResponse){
+        option (google.api.http).get="/cosmos/lms/v1beta1/studentid";
+    }
     rpc GetStudent(GetStudentRequest) returns (GetStudentResponse);
-    rpc GetLeaveRequests(GetLeaveRequestsRequest) returns (GetLeaveApprovesResponse){};
+    rpc GetLeaveRequests(GetLeaveRequestsRequest) returns (GetLeaveApprovesResponse){
+        option (google.api.http).get="/cosmos/lms/v1beta1/leaveid";
+    }
     rpc GetLeaveApproves(GetLeaveApprovesRequest) returns (GetLeaveApprovesResponse){};
     rpc GetAdmin(GetAdminRequest) returns (GetAdminResponse);
 }
