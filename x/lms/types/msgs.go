@@ -5,6 +5,7 @@ import (
 	//"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	//"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"time"
 )
@@ -56,11 +57,11 @@ func (msg AddStudentRequest) ValidateBasic() error {
 	}
 }
 
-func NewAcceptLeaveRequest(admin string,leaveID string,status LeaveStatus) *AcceptLeaveRequest {
+func NewAcceptLeaveRequest(admin string, leaveID string, status LeaveStatus) *AcceptLeaveRequest {
 	return &AcceptLeaveRequest{
-		 Admin: admin,
-		 LeaveId: leaveID,
-		 Status:  status,
+		Admin:   admin,
+		LeaveId: leaveID,
+		Status:  status,
 	}
 }
 
@@ -89,13 +90,13 @@ func (msg AcceptLeaveRequest) ValidateBasic() error {
 	}
 }
 
-func NewApplyLeaveRequest(address string,reason string,leaveID string,from *time.Time,to *time.Time ) *ApplyLeaveRequest {
+func NewApplyLeaveRequest(address string, reason string, leaveID string, from *time.Time, to *time.Time) *ApplyLeaveRequest {
 	return &ApplyLeaveRequest{
 		Address: address,
-		Reason: reason,
+		Reason:  reason,
 		LeaveId: leaveID,
-		From: from,
-		To: to,
+		From:    from,
+		To:      to,
 	}
 }
 
@@ -126,7 +127,7 @@ func (msg ApplyLeaveRequest) ValidateBasic() error {
 	}
 }
 
-func NewRegisterAdminRequest(address string,name string) *RegisterAdminRequest {
+func NewRegisterAdminRequest(address string, name string) *RegisterAdminRequest {
 	return &RegisterAdminRequest{
 		Address: address,
 		Name:    name,
@@ -149,7 +150,7 @@ func (msg RegisterAdminRequest) ValidateBasic() error {
 	// }
 	if msg.Address == "" {
 		return errors.New("Address cant be null")
-	} else if msg.Name == "" {
+	} else if msg.Name == ""{
 		return errors.New("Name cant be null")
 	} else {
 		return errors.New("Basic validations done successfully")

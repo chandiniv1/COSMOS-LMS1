@@ -151,9 +151,9 @@ func (s *TestSuite) TestAcceptLeave() {
 		Status  types.LeaveStatus
 		res     error
 	}{
-		{"vitwit", "", types.LeaveStatus_STATUS_ACCEPTED, types.ErrStudentIdNil},
-		{"", "0001", types.LeaveStatus_STATUS_ACCEPTED, types.ErrAdminNameNil},
-		{"sita", "0001", types.LeaveStatus_STATUS_ACCEPTED, types.ErrAdminDoesNotExist},
+		{"vitwit", "", types.LeaveStatus_STATUS_REJECTED, types.ErrStudentIdNil},
+		{"", "0001", types.LeaveStatus_STATUS_UNDEFINED, types.ErrAdminNameNil},
+		{"sita", "0001", types.LeaveStatus_STATUS_UNDEFINED, types.ErrAdminDoesNotExist},
 	}
 	for _, test := range tests {
 		err := s.stdntKeeper.AcptLeave(s.ctx, &types.AcceptLeaveRequest{

@@ -33,6 +33,7 @@ func (k Keeper) AddStdnt(ctx sdk.Context, addstudent *types.AddStudentRequest) e
 	}
 	return nil
 }
+
 //<----------------------Register Admin---------------------------------->//
 
 func (k Keeper) RgstrAdmin(ctx sdk.Context, registeradminreq *types.RegisterAdminRequest) error {
@@ -98,12 +99,25 @@ func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveReques
 //<-----------------ACCEPT LEAVE------------------------------------>//
 
 func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequest) error {
-	if acceptleavereq.Admin == "" {
-		return types.ErrAdminNameNil
+	//if the admin is nil then the leave status is undefined
+	if acceptleavereq.Admin == "" || k.CheckAdmin(ctx, acceptleavereq.Admin) == false {
+		store := ctx.KVStore(k.storeKey)
+		acceptleavereq.Status = types.LeaveStatus_STATUS_UNDEFINED
+		marshalAcceptLeave, err := k.cdc.Marshal(acceptleavereq)
+		if err != nil {
+			panic(err)
+		}
+		store.Set(types.AcceptedLeavesStoreKey(acceptleavereq.Admin, acceptleavereq.LeaveId), marshalAcceptLeave)
+		//return types.ErrAdminNameNil
 	} else if acceptleavereq.LeaveId == "" {
-		return types.ErrStudentIdNil
-	} else if k.CheckAdmin(ctx, acceptleavereq.Admin) == false {
-		return types.ErrAdminDoesNotExist
+		store := ctx.KVStore(k.storeKey)
+		acceptleavereq.Status = types.LeaveStatus_STATUS_REJECTED
+		marshalAcceptLeave, err := k.cdc.Marshal(acceptleavereq)
+		if err != nil {
+			panic(err)
+		}
+		store.Set(types.AcceptedLeavesStoreKey(acceptleavereq.Admin, acceptleavereq.LeaveId), marshalAcceptLeave)
+
 	} else {
 		store := ctx.KVStore(k.storeKey)
 		acceptleavereq.Status = types.LeaveStatus_STATUS_ACCEPTED
@@ -200,39 +214,3 @@ func (k Keeper) GetAcceptedLeaves(ctx sdk.Context, getLeaves *types.GetLeaveAppr
 	}
 }
 
-// func (k Keeper) AcceptLeaves(ctx sdk.Context, req *types.AcceptLeaveRequest) error {
-// 	if _, err := sdk.AccAddressFromBech32(req.Admin); err != nil {
-// 		panic(fmt.Errorf("invalid address: %w", err))
-// 	}
-// 	store := ctx.KVStore(k.storeKey)
-// 	adminpresent := store.Get(types.AdminStoreKey(req.Admin))
-// 	if adminpresent == nil {
-// 		req.Status = types.LeaveStatus_STATUS_UNDEFINED
-// 		_, err := k.cdc.Marshal(req)
-// 		if err != nil {
-// 			panic(err)
-// 		} else {
-// 			val := store.Get(types.StudentStoreKey(req.LeaveId))
-// 			if val == nil {
-// 				return nil//types.ErrStudentDidNotLogin 
-// 			}
-// 			leaveval := store.Get(types.AppliedLeavesStoreKey(req.,))
-// 			if leaveval == nil {
-// 				fmt.Println("student did not request the leave")
-// 			}
-// 		}
-// 	} else {
-// 		req.Status = types.LeaveStatus_STATUS_ACCEPTED
-// 		marshalaccepteddata, err := k.cdc.Marshal(req)
-// 		if err != nil {
-// 			log.Println(err)
-// 		}
-// 		marshaldata := store.Get(types.LeaveStoreId(req.StudentId))
-// 		if marshaldata == nil {
-// 			fmt.Println("student did not request leave")
-// 		} else {
-// 			store.Set(types.AllLeavesStoreId(req.StudentId), marshalaccepteddata)
-// 		}
-// 	}
-// 	return nil
-// }
