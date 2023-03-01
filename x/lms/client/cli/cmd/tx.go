@@ -5,6 +5,7 @@ import (
 
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 )
@@ -24,7 +25,6 @@ func GetTxCmd() *cobra.Command {
 		AcceptLeaveCmd(),
 		ApplyLeaveCmd(),
 	)
-
 	return studentTxCmd
 }
 
@@ -49,6 +49,7 @@ func AddStudentCmd() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -71,6 +72,7 @@ func RegisterAdminCmd() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -100,6 +102,7 @@ func ApplyLeaveCmd() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -123,6 +126,7 @@ func AcceptLeaveCmd() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}
+	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
 

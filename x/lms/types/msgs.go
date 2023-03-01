@@ -26,17 +26,13 @@ func NewAddStudentRequest(admin string, name string, address string, id string) 
 	}
 }
 
-// func NewAddStudentRequest() *AddStudentRequest {
-// 	return &AddStudentRequest{}
-// }
-
 func (msg AddStudentRequest) GetSignBytes() []byte {
 	return []byte{}
 }
 
 // GetSigners Implements Msg.
 func (msg AddStudentRequest) GetSigners() []sdk.AccAddress {
-	fromAddress, _ := sdk.AccAddressFromBech32("hii")
+	fromAddress, _ := sdk.AccAddressFromBech32("hiii")
 	return []sdk.AccAddress{fromAddress}
 }
 
@@ -45,7 +41,7 @@ func (msg AddStudentRequest) ValidateBasic() error {
 	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
 	// }
 	if msg.Admin == "" {
-		return errors.New("Admin cant be null")
+		return ErrAdminNameNil //errors.New("Admin cant be null")
 	} else if msg.Address == "" {
 		return errors.New("Address cant be null")
 	} else if msg.Id == "" {
@@ -86,7 +82,8 @@ func (msg AcceptLeaveRequest) ValidateBasic() error {
 	} else if msg.Status == 0 {
 		return errors.New("status cant be null")
 	} else {
-		return errors.New("Basic validations done successfully")
+		// return errors.New("Basic validations done successfully")
+		return nil
 	}
 }
 
@@ -123,7 +120,7 @@ func (msg ApplyLeaveRequest) ValidateBasic() error {
 	} else if (msg.Reason) == "" {
 		return errors.New("Reason cant be nil")
 	} else {
-		return errors.New("validations done successfully")
+		return nil
 	}
 }
 
@@ -150,10 +147,11 @@ func (msg RegisterAdminRequest) ValidateBasic() error {
 	// }
 	if msg.Address == "" {
 		return errors.New("Address cant be null")
-	} else if msg.Name == ""{
+	} else if msg.Name == "" {
 		return errors.New("Name cant be null")
 	} else {
-		return errors.New("Basic validations done successfully")
+		// return errors.New("Basic validations done successfully")
+		return nil
 	}
 
 }

@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"errors"
-
 	"fmt"
 	"strconv"
 
@@ -127,7 +125,7 @@ func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequ
 		}
 		store.Set(types.AcceptedLeavesStoreKey(acceptleavereq.Admin, acceptleavereq.LeaveId), marshalAcceptLeave)
 	}
-	return errors.New("stored successfully")
+	return nil
 }
 
 //<---------------CHECK ADMIN------------------------------------->//
@@ -144,11 +142,10 @@ func (k Keeper) CheckAdmin(ctx sdk.Context, address string) bool {
 
 //<-----------------CHECK STUDENT------------------------------>//
 
-func (k Keeper) CheckStudent(ctx sdk.Context, studentAddress string) bool {
+func (k Keeper) CheckStudent(ctx sdk.Context, id string) bool {
 	store := ctx.KVStore(k.storeKey)
-	studentName := store.Get(types.StudentStoreKey(studentAddress))
-	//fmt.Println("studentname:",studentName)
-	if studentName == nil {
+	student := store.Get(types.StudentStoreKey(id))
+	if student == nil {
 		return false
 	}
 	return true
@@ -213,4 +210,3 @@ func (k Keeper) GetAcceptedLeaves(ctx sdk.Context, getLeaves *types.GetLeaveAppr
 		fmt.Println(approves)
 	}
 }
-

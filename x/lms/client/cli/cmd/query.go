@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,6 @@ func GetQueryCmd() *cobra.Command {
 		GetLeaveRequestListCmd(),
 		GetLeaveApprovesListCmd(),
 	)
-
 	return queryTxCmd
 }
 
@@ -54,6 +54,7 @@ func GetStudentCmd() *cobra.Command {
 
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -81,6 +82,7 @@ func GetAdminCmd() *cobra.Command {
 
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -103,6 +105,7 @@ func GetStudentsCmd() *cobra.Command {
 			return clientCtx.PrintProto(res)
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -125,6 +128,7 @@ func GetLeaveRequestListCmd() *cobra.Command {
 			return clientCtx.PrintProto(res)
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
 
@@ -147,6 +151,7 @@ func GetLeaveApprovesListCmd() *cobra.Command {
 			return clientCtx.PrintProto(res)
 		},
 	}
+	flags.AddQueryFlagsToCmd(cmd)
 	return cmd
 }
 

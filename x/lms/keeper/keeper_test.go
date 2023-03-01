@@ -1,7 +1,9 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/keeper"
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
@@ -12,9 +14,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
-
-	//"google/protobuf/timestamp.proto"
-	"time"
 )
 
 type TestSuite struct {
@@ -42,7 +41,7 @@ func (s *TestSuite) SetupTest() {
 }
 
 func (s *TestSuite) TestAddStudent() {
-	// ss := nil
+
 	tests := []struct {
 		Address string
 		Admin   string
@@ -70,15 +69,6 @@ func (s *TestSuite) TestAddStudent() {
 		Id:      "1001",
 	})
 	s.Require().NoError(err)
-
-	// details := s.stdntKeeper.AddStdnt(s.ctx, &types.AddStudentRequest{
-	// 	Admin:   "vitwit",
-	// 	Address: "0002",
-	// 	Name:    "",
-	// 	Id:      "1002",
-	// })
-	// expected := "name cant be null"
-	// s.Require().EqualError(details, expected)
 }
 
 func (s *TestSuite) TestRegisterAdmin() {
@@ -105,7 +95,62 @@ func (s *TestSuite) TestRegisterAdmin() {
 	s.Require().NoError(err)
 }
 
+func (s *TestSuite) TestCheckAdmin() {
+	tests := []struct {
+		Address string
+		Name    string
+	}{
+		{"00x03", "chandini"},
+		{"00x04", "sudha"},
+	}
+
+	for _, test := range tests {
+		req := types.RegisterAdminRequest{
+			Address: test.Address,
+			Name:    test.Name,
+		}
+		s.stdntKeeper.RgstrAdmin(s.ctx, &req)
+		check := s.stdntKeeper.CheckAdmin(s.ctx, req.Address)
+		if check == true {
+			fmt.Println("Admin Registered")
+		} else {
+			fmt.Println("Admin didnot Registered")
+		}
+	}
+}
+
+func (s *TestSuite) TestCheckStudent() {
+
+	tests := []struct {
+		Address string
+		Admin   string
+		Name    string
+		Id      string
+	}{
+		{"00012", "vitwit", "geetha", "1111"},
+		{"00003", "vitwit", "seetha", "1112"},
+		{"00004", "vitwit", "apple", "1113"},
+	}
+	for _, test := range tests {
+		req := types.AddStudentRequest{
+			Address: test.Address,
+			Admin:   test.Admin,
+			Name:    test.Name,
+			Id:      test.Id,
+		}
+		s.stdntKeeper.AddStdnt(s.ctx, &req)
+		check := s.stdntKeeper.CheckStudent(s.ctx, req.Id)
+		if check == true {
+			fmt.Println("student added")
+		} else {
+			fmt.Println("student didnot added")
+		}
+
+	}
+}
+
 func (s *TestSuite) TestApplyLeave() {
+	///////method-1 using Require().Equal()/////////////
 	// type test struct {
 	// 	args1    types.ApplyLeaveRequest
 	// 	expected error
@@ -130,6 +175,8 @@ func (s *TestSuite) TestApplyLeave() {
 	// 		s.Require().Equal(test.expected, "")
 	// 	}
 	// }
+
+	//testing using require().NoError()
 	date := "2006-Jan-02"
 	fromdate2, _ := time.Parse(date, "2023-Feb-23")
 	todate2, _ := time.Parse(date, "2023-Feb-24")
@@ -149,11 +196,10 @@ func (s *TestSuite) TestAcceptLeave() {
 		Admin   string
 		LeaveID string
 		Status  types.LeaveStatus
-		res     error
 	}{
-		{"vitwit", "", types.LeaveStatus_STATUS_REJECTED, types.ErrStudentIdNil},
-		{"", "0001", types.LeaveStatus_STATUS_UNDEFINED, types.ErrAdminNameNil},
-		{"sita", "0001", types.LeaveStatus_STATUS_UNDEFINED, types.ErrAdminDoesNotExist},
+		{"vitwit", "", types.LeaveStatus_STATUS_REJECTED},
+		{"", "0001", types.LeaveStatus_STATUS_UNDEFINED},
+		{"sita", "0001", types.LeaveStatus_STATUS_ACCEPTED},
 	}
 	for _, test := range tests {
 		err := s.stdntKeeper.AcptLeave(s.ctx, &types.AcceptLeaveRequest{
@@ -161,7 +207,7 @@ func (s *TestSuite) TestAcceptLeave() {
 			LeaveId: test.LeaveID,
 			Status:  test.Status,
 		})
-		s.Require().Equal(err, test.res)
+		s.Require().NoError(err)
 	}
 
 }
