@@ -48,11 +48,11 @@ func (s *TestSuite) TestAddStudent() {
 		Admin   string
 		Name    string
 		Id      string
-		Res     string
+		Res     error
 	}{
-		{"00012", "mango", "", "8723", "name cant be null"},
-		{"00003", "mango", "apple", "", "Id cant be null"},
-		{"", "mango", "apple", "0003", "address cant be null"},
+		{"00012", "mango", "", "8723", types.ErrStudentNameNil},
+		{"00003", "mango", "apple", "", types.ErrStudentIdNil},
+		{"", "mango", "apple", "0003", types.ErrStudentAddressNil},
 	}
 	for _, test := range tests {
 		err := s.stdntKeeper.AddStdnt(s.ctx, &types.AddStudentRequest{
@@ -61,7 +61,7 @@ func (s *TestSuite) TestAddStudent() {
 			Name:    test.Name,
 			Id:      test.Id,
 		})
-		s.Require().EqualError(err, test.Res)
+		s.Require().Equal(err, test.Res)
 	}
 	err := s.stdntKeeper.AddStdnt(s.ctx, &types.AddStudentRequest{
 		Address: "0001",
@@ -85,10 +85,10 @@ func (s *TestSuite) TestRegisterAdmin() {
 	tests := []struct {
 		Address string
 		Name    string
-		Res     string
+		Res     error
 	}{
-		{"", "vitwit", "Admin address cant be null"},
-		{"00x02", "", "Admin name cant be null"},
+		{"", "vitwit", types.ErrAdminAddressNil},
+		{"00x02", "", types.ErrAdminNameNil},
 	}
 
 	for _, test := range tests {
@@ -96,7 +96,7 @@ func (s *TestSuite) TestRegisterAdmin() {
 			Address: test.Address,
 			Name:    test.Name,
 		})
-		s.Require().EqualError(err, test.Res)
+		s.Require().Equal(err, test.Res)
 	}
 	err := s.stdntKeeper.RgstrAdmin(s.ctx, &types.RegisterAdminRequest{
 		Address: "00x01",
@@ -108,7 +108,7 @@ func (s *TestSuite) TestRegisterAdmin() {
 func (s *TestSuite) TestApplyLeave() {
 	// type test struct {
 	// 	args1    types.ApplyLeaveRequest
-	// 	expected string
+	// 	expected error
 	// }
 	// date := "2006-Jan-02"
 	// fromdate, _ := time.Parse(date, "2023-Feb-23")
@@ -131,15 +131,15 @@ func (s *TestSuite) TestApplyLeave() {
 	// 	}
 	// }
 	date := "2006-Jan-02"
-	fromdate, _ := time.Parse(date, "2023-Feb-23")
-	todate, _ := time.Parse(date, "2023-Feb-24")
+	fromdate2, _ := time.Parse(date, "2023-Feb-23")
+	todate2, _ := time.Parse(date, "2023-Feb-24")
 
 	err := s.stdntKeeper.AplyLeave(s.ctx, &types.ApplyLeaveRequest{
 		Address: "00x01",
 		Reason:  "cold",
 		LeaveId: "1001",
-		From:    &fromdate,
-		To:      &todate,
+		From:    &fromdate2,
+		To:      &todate2,
 	})
 	s.Require().NoError(err)
 }
@@ -149,12 +149,11 @@ func (s *TestSuite) TestAcceptLeave() {
 		Admin   string
 		LeaveID string
 		Status  types.LeaveStatus
-		res     string
+		res     error
 	}{
-		{"vitwit", "0001", 0, "Status cant be null"},
-		{"vitwit", "", types.LeaveStatus_STATUS_ACCEPTED, "LeaveId cant be null"},
-		{"", "0001", types.LeaveStatus_STATUS_ACCEPTED, "Admin cant be null"},
-		{"sita", "0001", types.LeaveStatus_STATUS_ACCEPTED, "Admin does not exist"},
+		{"vitwit", "", types.LeaveStatus_STATUS_ACCEPTED, types.ErrStudentIdNil},
+		{"", "0001", types.LeaveStatus_STATUS_ACCEPTED, types.ErrAdminNameNil},
+		{"sita", "0001", types.LeaveStatus_STATUS_ACCEPTED, types.ErrAdminDoesNotExist},
 	}
 	for _, test := range tests {
 		err := s.stdntKeeper.AcptLeave(s.ctx, &types.AcceptLeaveRequest{
@@ -162,7 +161,7 @@ func (s *TestSuite) TestAcceptLeave() {
 			LeaveId: test.LeaveID,
 			Status:  test.Status,
 		})
-		s.Require().EqualError(err, test.res)
+		s.Require().Equal(err, test.res)
 	}
 
 }
