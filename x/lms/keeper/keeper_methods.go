@@ -153,14 +153,17 @@ func (k Keeper) CheckStudent(ctx sdk.Context, id string) bool {
 
 //<-----------------GET STUDENT------------------------------->//
 
-func (k Keeper) GetStdnt(ctx sdk.Context, address string) (req types.Student, err error) {
+func (k Keeper) GetStdnt(ctx sdk.Context, Id string) (req types.Student, err error) {
 	store := ctx.KVStore(k.storeKey)
-	student := store.Get(types.StudentStoreKey(address))
+	student := store.Get(types.StudentStoreKey(Id))
+	fmt.Println(student)
+	// fmt.Println("jgjgfhdhg")
 	if student == nil {
-		//errors.New("student not found")
 		panic("student not found")
 	}
+	fmt.Println(student)
 	k.cdc.MustUnmarshal(student, &req)
+	fmt.Println(req)
 	return req, err
 }
 
@@ -177,14 +180,17 @@ func (k Keeper) GetAdmn(ctx sdk.Context, address string) []byte {
 
 //<-------------GET STUDENTS------------------------------------->//
 
-func (k Keeper) GetStdnts(ctx sdk.Context, getStudents *types.GetStudentsRequest) {
+func (k Keeper) GetStdnts(ctx sdk.Context, getStudents *types.GetStudentsRequest) []*types.Student {
 	store := ctx.KVStore(k.storeKey)
-	var student types.Student
+	var students []*types.Student
 	iter := store.Iterator(types.StudentKey, nil)
 	for ; iter.Valid(); iter.Next() {
+		var student types.Student
 		k.cdc.Unmarshal(iter.Value(), &student)
-		fmt.Println(student)
+		students = append(students, &student)
+		fmt.Println("the student are", student)
 	}
+	return students
 }
 
 //<------------------GET LEAVE REQUESTS------------------------------->//

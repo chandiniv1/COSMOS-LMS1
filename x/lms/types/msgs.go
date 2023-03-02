@@ -1,10 +1,9 @@
 package types
 
 import (
-	"errors"
+
 	//"context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	//"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"time"
@@ -17,7 +16,7 @@ var (
 	_ sdk.Msg = &RegisterAdminRequest{}
 )
 
-func NewAddStudentRequest(admin string, name string, address string, id string) *AddStudentRequest {
+func NewAddStudentRequest(admin string, address string, name string, id string) *AddStudentRequest {
 	return &AddStudentRequest{
 		Admin:   admin,
 		Address: address,
@@ -32,24 +31,24 @@ func (msg AddStudentRequest) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg AddStudentRequest) GetSigners() []sdk.AccAddress {
-	fromAddress, _ := sdk.AccAddressFromBech32("hiii")
+	fromAddress, _ := sdk.AccAddressFromBech32(msg.Admin)
 	return []sdk.AccAddress{fromAddress}
 }
 
 func (msg AddStudentRequest) ValidateBasic() error {
-	// if _, err := sdk.AccAddressFromBech32("hii"); err != nil {
+	// if _, err := sdk.AccAddressFromBech32("./"); err != nil {
 	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
 	// }
 	if msg.Admin == "" {
-		return ErrAdminNameNil //errors.New("Admin cant be null")
+		return ErrAdminAddressNil
 	} else if msg.Address == "" {
-		return errors.New("Address cant be null")
+		return ErrStudentAddressNil
 	} else if msg.Id == "" {
-		return errors.New("Id cant be null")
+		return ErrStudentIdNil
 	} else if msg.Name == "" {
-		return errors.New("Name cant be null")
+		return ErrStudentNameNil
 	} else {
-		return errors.New("Basic validations done successfully")
+		return nil
 	}
 }
 
@@ -67,22 +66,19 @@ func (msg AcceptLeaveRequest) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg AcceptLeaveRequest) GetSigners() []sdk.AccAddress {
-	fromAddress, _ := sdk.AccAddressFromBech32("hii")
+	fromAddress, _ := sdk.AccAddressFromBech32(msg.Admin)
 	return []sdk.AccAddress{fromAddress}
 }
 
 func (msg AcceptLeaveRequest) ValidateBasic() error {
-	if _, err := sdk.AccAddressFromBech32("hii"); err != nil {
-		return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
-	}
+	// if _, err := sdk.AccAddressFromBech32(msg.Admin); err != nil {
+	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
+	// }
 	if msg.Admin == "" {
-		return errors.New("Admin cant be null")
+		return ErrAdminAddressNil
 	} else if msg.LeaveId == "" {
-		return errors.New("ID cant be null")
-	} else if msg.Status == 0 {
-		return errors.New("status cant be null")
+		return ErrStudentIdNil
 	} else {
-		// return errors.New("Basic validations done successfully")
 		return nil
 	}
 }
@@ -108,17 +104,17 @@ func (msg ApplyLeaveRequest) GetSigners() []sdk.AccAddress {
 }
 
 func (msg ApplyLeaveRequest) ValidateBasic() error {
-	// if _, err := sdk.AccAddressFromBech32("hii"); err != nil {
+	// if _, err := sdk.AccAddressFromBech32(""); err != nil {
 	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
 	// }
 	if (msg.Address) == "" {
-		return errors.New("Address cant be nil")
+		return ErrStudentAddressNil
 	} else if (msg.From) == nil {
-		return errors.New("From date cant be nil")
+		return ErrStudentDatesNil
 	} else if (msg.To) == nil {
-		return errors.New("To date cant be nil")
+		return ErrStudentDatesNil
 	} else if (msg.Reason) == "" {
-		return errors.New("Reason cant be nil")
+		return ErrEmptyReason
 	} else {
 		return nil
 	}
@@ -146,11 +142,10 @@ func (msg RegisterAdminRequest) ValidateBasic() error {
 	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
 	// }
 	if msg.Address == "" {
-		return errors.New("Address cant be null")
+		return ErrAdminAddressNil
 	} else if msg.Name == "" {
-		return errors.New("Name cant be null")
+		return ErrAdminNameNil
 	} else {
-		// return errors.New("Basic validations done successfully")
 		return nil
 	}
 

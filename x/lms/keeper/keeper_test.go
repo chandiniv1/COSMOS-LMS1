@@ -212,6 +212,18 @@ func (s *TestSuite) TestAcceptLeave() {
 
 }
 
+func (s *TestSuite) TestGetStudents(){
+	// err:=s.stdntKeeper.AddStdnt(s.ctx, &types.AddStudentRequest{
+	// 	Address: "0001",
+	// 	Admin:   "vitwit",
+	// 	Name:    "apple",
+	// 	Id:      "1001",
+	// })
+	s.TestAddStudent()
+	s.stdntKeeper.GetStdnts(s.ctx,&types.GetStudentsRequest{})
+
+}
+
 func TestTestSuite(t *testing.T) {
 	suite.Run(t, new(TestSuite))
 }

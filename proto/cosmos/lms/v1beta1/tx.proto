@@ -82,6 +82,7 @@ service Msg {
     rpc AddStudent(AddStudentRequest) returns (AddStudentResponse);
     rpc ApplyLeave(ApplyLeaveRequest) returns  (ApplyLeaveResponse);
     rpc AcceptLeave(AcceptLeaveRequest) returns (AcceptLeaveResponse);
+   // rpc AddStudents(AddStudentRequests) returns (AddStudentResponses){};
 }
 
 

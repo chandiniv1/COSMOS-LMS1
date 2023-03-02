@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -28,9 +30,9 @@ func GetQueryCmd() *cobra.Command {
 
 func GetStudentCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-student",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Use:   "get-student",
+		Short: "get-student returns the students by taking ID and Address",
+		Long:  `get-student returns the students by taking ID and Address`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -60,9 +62,9 @@ func GetStudentCmd() *cobra.Command {
 
 func GetAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-student",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Use:   "get-admin",
+		Short: "get-admin is used to get the admin by taking admin address",
+		Long:  `get-admin is used to get the admin by taking admin address`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -88,9 +90,9 @@ func GetAdminCmd() *cobra.Command {
 
 func GetStudentsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-student",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Use:   "get-students",
+		Short: "get-students returns all the students",
+		Long:  `get-students returns all the students present in the student store`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -98,10 +100,12 @@ func GetStudentsCmd() *cobra.Command {
 				panic(err)
 			}
 			queryClient := types.NewQueryClient(clientCtx)
+			fmt.Println("Im inside the getstudents cli")
 			res, err := queryClient.GetStudents(cmd.Context(), &types.GetStudentsRequest{})
 			if err != nil {
 				panic(err)
 			}
+			// fmt.Println("the resulted received is ", res.Students)
 			return clientCtx.PrintProto(res)
 		},
 	}
@@ -111,9 +115,9 @@ func GetStudentsCmd() *cobra.Command {
 
 func GetLeaveRequestListCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-student",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Use:   "get-leave-requests",
+		Short: "get-leave-requests returns all the students who applied for leaves",
+		Long:  `get-leave-requests returns all the students who applied for leaves in the applied leaves store`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -134,9 +138,9 @@ func GetLeaveRequestListCmd() *cobra.Command {
 
 func GetLeaveApprovesListCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-student",
-		Short: "A brief description of your command",
-		Long:  `A longer description that spans multiple lines and likely contains example and usage of using your command.`,
+		Use:   "get-leave-approves",
+		Short: "get-leave-approves returns all the students whose leaves are approved",
+		Long:  `get-leave-approves returns all the students whose leaves are approved in the accepted leaves store`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

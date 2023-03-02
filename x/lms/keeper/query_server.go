@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,14 +21,17 @@ func (k Keeper) GetStudents(goCtx context.Context, req *types.GetStudentsRequest
 		return nil, sdkerrors.ErrInvalidRequest.Wrap("empty request")
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.GetStdnts(ctx, req)
-
-	return &types.GetStudentsResponse{}, nil
+	students := k.GetStdnts(ctx, req)
+	res := types.GetStudentsResponse{
+		Students: students,
+	}
+	return &res, nil
 }
 
 func (k Keeper) GetStudent(goCtx context.Context, req *types.GetStudentRequest) (*types.GetStudentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.GetStdnt(ctx, req.Address)
+	fmt.Println("gtstudent")
+	k.GetStdnt(ctx, req.Id)
 	return &types.GetStudentResponse{}, nil
 }
 
