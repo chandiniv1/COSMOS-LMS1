@@ -41,8 +41,7 @@ func GetStudentCmd() *cobra.Command {
 			}
 
 			student := types.GetStudentRequest{
-				Id:      args[0],
-				Address: args[1],
+				Address: args[0],
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)

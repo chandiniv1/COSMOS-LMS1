@@ -139,7 +139,7 @@ func (s *TestSuite) TestCheckStudent() {
 			Id:      test.Id,
 		}
 		s.stdntKeeper.AddStdnt(s.ctx, &req)
-		check := s.stdntKeeper.CheckStudent(s.ctx, req.Id)
+		check := s.stdntKeeper.CheckStudent(s.ctx, req.Address)
 		if check == true {
 			fmt.Println("student added")
 		} else {
@@ -177,13 +177,14 @@ func (s *TestSuite) TestApplyLeave() {
 	// }
 
 	//testing using require().NoError()
+	s.TestAddStudent()
 	date := "2006-Jan-02"
-	fromdate2, _ := time.Parse(date, "2023-Feb-23")
-	todate2, _ := time.Parse(date, "2023-Feb-24")
+	fromdate2, _ := time.Parse(date, "2023-Mar-03")
+	todate2, _ := time.Parse(date, "2023-Mar-05")
 
 	err := s.stdntKeeper.AplyLeave(s.ctx, &types.ApplyLeaveRequest{
-		Address: "00x01",
-		Reason:  "cold",
+		Address: "0001",
+		Reason:  "fever",
 		LeaveId: "1001",
 		From:    &fromdate2,
 		To:      &todate2,
@@ -212,16 +213,15 @@ func (s *TestSuite) TestAcceptLeave() {
 
 }
 
-func (s *TestSuite) TestGetStudents(){
-	// err:=s.stdntKeeper.AddStdnt(s.ctx, &types.AddStudentRequest{
-	// 	Address: "0001",
-	// 	Admin:   "vitwit",
-	// 	Name:    "apple",
-	// 	Id:      "1001",
-	// })
+func (s *TestSuite) TestGetStudents() {
 	s.TestAddStudent()
-	s.stdntKeeper.GetStdnts(s.ctx,&types.GetStudentsRequest{})
+	s.stdntKeeper.GetStdnts(s.ctx, &types.GetStudentsRequest{})
 
+}
+
+func (s *TestSuite) TestGetLeaveRqsts(){
+	s.TestApplyLeave()
+	s.stdntKeeper.GetLeaveRqsts(s.ctx,&types.GetLeaveRequestsRequest{})
 }
 
 func TestTestSuite(t *testing.T) {

@@ -15,12 +15,11 @@ import "google/api/annotations.proto" ;
 //     string id = 3;
 // }
 message GetStudentRequest{
-    string id=1;
-    string Address=2;
+    string Address=1;
 }
 
 message GetStudentResponse{
-    Student student=1;
+    AddStudentRequest student=1;
 }
 
 message GetAdminRequest{
@@ -28,7 +27,7 @@ message GetAdminRequest{
 }
 
 message GetAdminResponse{
-    Admin admin=1;
+    RegisterAdminRequest admin=1;
 }
 
 message GetStudentsRequest{
@@ -36,7 +35,7 @@ message GetStudentsRequest{
 }
 
 message GetStudentsResponse{
-    repeated Student  students=1;
+    repeated AddStudentRequest  students=1;
 }
 
 message GetLeaveRequestsRequest{
@@ -61,7 +60,7 @@ service Query{
         option (google.api.http).get="/cosmos/lms/v1beta1/studentid";
     }
     rpc GetStudent(GetStudentRequest) returns (GetStudentResponse);
-    rpc GetLeaveRequests(GetLeaveRequestsRequest) returns (GetLeaveApprovesResponse){
+    rpc GetLeaveRequests(GetLeaveRequestsRequest) returns (GetLeaveRequestsResponse){
         option (google.api.http).get="/cosmos/lms/v1beta1/leaveid";
     }
     rpc GetLeaveApproves(GetLeaveApprovesRequest) returns (GetLeaveApprovesResponse){};

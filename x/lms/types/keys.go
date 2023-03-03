@@ -26,10 +26,10 @@ func AdminStoreKey(address string) []byte {
 	return key
 }
 
-func StudentStoreKey(studentID string) []byte {
-	key := make([]byte, len(StudentKey)+len(studentID))
+func StudentStoreKey(studentAddress string) []byte {
+	key := make([]byte, len(StudentKey)+len(studentAddress))
 	copy(key, StudentKey)
-	copy(key[len(StudentKey):], []byte(studentID))
+	copy(key[len(StudentKey):], []byte(studentAddress))
 	return key
 }
 
@@ -45,9 +45,7 @@ func AcceptedLeavesStoreKey(admin string, leaveID string) []byte {
 	copy(key, AcceptedLeavesKey)
 	copy(key[len(AcceptedLeavesKey):], []byte(admin))
 	copy(key[len(AcceptedLeavesKey)+len(admin):], SequenceKey)
-	// copy(key, SequenceKey)
 	copy(key[len(AcceptedLeavesKey)+len(admin)+len(SequenceKey):], []byte(leaveID))
-	// copy(key[len(SequenceKey):], leaveID)
 	return key
 }
 
