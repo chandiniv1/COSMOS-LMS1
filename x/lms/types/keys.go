@@ -10,9 +10,9 @@ const (
 )
 
 var (
-	adminKey   = []byte{0x01}
-	StudentKey = []byte{0x02}
-	//LeavesKey   = []byte{0x03}
+	adminKey          = []byte{0x01}
+	StudentKey        = []byte{0x02}
+	LeavesKey         = []byte{0x07}
 	CounterKey        = []byte{0x03}
 	SequenceKey       = []byte{0x04}
 	AcceptedLeavesKey = []byte{0x05}
@@ -33,12 +33,12 @@ func StudentStoreKey(studentAddress string) []byte {
 	return key
 }
 
-// func LeavesStoreKey(leaveID string) []byte {
-// 	key := make([]byte, len(LeavesKey)+len(leaveID))
-// 	copy(key, LeavesKey)
-// 	copy(key[len(LeavesKey):], leaveID)
-// 	return key
-// }
+func LeavesStoreKey(leaveID string) []byte {
+	key := make([]byte, len(LeavesKey)+len(leaveID))
+	copy(key, LeavesKey)
+	copy(key[len(LeavesKey):], []byte(leaveID))
+	return key
+}
 
 func AcceptedLeavesStoreKey(admin string, leaveID string) []byte {
 	key := make([]byte, len(AcceptedLeavesKey)+len(admin)+len(SequenceKey)+len(leaveID))

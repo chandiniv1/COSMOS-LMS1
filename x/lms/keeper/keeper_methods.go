@@ -8,59 +8,69 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-//<-------------------ADD STUDENT-------------------------------------------->//
+//<-------------------------------ADD STUDENT------------------------------------>//
 
-func (k Keeper) AddStdnt(ctx sdk.Context, addstudent *types.AddStudentRequest) error {
-	//fmt.Printf("addstudent: %v\n", addstudent)
-	if addstudent.Name == "" {
+//this method registers student to the students store and return error if the fields are not properly specified
+//or if the student already exist
+
+func (k Keeper) AddStdnt(ctx sdk.Context, addStudent *types.AddStudentRequest) error {
+	if addStudent.Name == "" {
 		return types.ErrStudentNameNil
-	} else if addstudent.Address == "" {
+	} else if addStudent.Address == "" {
 		return types.ErrStudentAddressNil
-	} else if addstudent.Id == "" {
+	} else if addStudent.Id == "" {
 		return types.ErrStudentIdNil
+	} else if addStudent.Admin == "" {
+		return types.ErrAdminAddressNil
 	} else {
 		store := ctx.KVStore(k.storeKey)
-		marshalAddStudent, err := k.cdc.Marshal(addstudent)
+		marshalAddStudent, err := k.cdc.Marshal(addStudent)
 		if err != nil {
 			panic(err)
 		} else {
-			if k.CheckStudent(ctx, addstudent.Address) != false {
+			if k.CheckStudent(ctx, addStudent.Address) != false {
 				return types.ErrStudentAlreadyExists
 			}
-			store.Set(types.StudentStoreKey(addstudent.Address), marshalAddStudent)
-			std := types.AddStudentRequest{}
-			k.cdc.Unmarshal(store.Get(types.StudentStoreKey(addstudent.Address)), &std)
+			store.Set(types.StudentStoreKey(addStudent.Address), marshalAddStudent)
+			// std := types.AddStudentRequest{}
+			// k.cdc.Unmarshal(store.Get(types.StudentStoreKey(addStudent.Address)), &std)
 		}
 	}
 	return nil
 }
 
-//<----------------------Register Admin---------------------------------->//
+//<-------------------------------Register Admin---------------------------------->//
 
-func (k Keeper) RgstrAdmin(ctx sdk.Context, registeradminreq *types.RegisterAdminRequest) error {
-	if registeradminreq.Address == "" {
+//This method is used to register the admin and it can be retrieved through AdminStoreKey
+
+func (k Keeper) RgstrAdmin(ctx sdk.Context, registerAdminReq *types.RegisterAdminRequest) error {
+	if registerAdminReq.Address == "" {
 		return types.ErrAdminAddressNil
-	} else if registeradminreq.Name == "" {
+	} else if registerAdminReq.Name == "" {
 		return types.ErrAdminNameNil
 	} else {
 		store := ctx.KVStore(k.storeKey)
 
-		marshalAdmin, err := k.cdc.Marshal(registeradminreq)
+		marshalAdmin, err := k.cdc.Marshal(registerAdminReq)
 		if err != nil {
 			return err
 		} else {
-			if k.CheckAdmin(ctx, registeradminreq.Address) != false {
+			if k.CheckAdmin(ctx, registerAdminReq.Address) != false {
 				return types.ErrAdminAlreadyExists
 			}
-			store.Set(types.AdminStoreKey(registeradminreq.Address), marshalAdmin)
+			store.Set(types.AdminStoreKey(registerAdminReq.Address), marshalAdmin)
 		}
 	}
 	return nil
 }
 
-//<-----------------APPLY LEAVE-------------------------------------->//
+//<-------------------------------APPLY LEAVE-------------------------------------->//
+
+//This methtod is used to apply the leave by a student ,it checks whether the student is existed in the store or not after that
+//it adds that leave request to the AppliedLeavesStore as well as it updates the counter
 
 func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveRequest) error {
+
 	if applyleavereq.Address == "" {
 		return types.ErrStudentAddressNil
 	} else if applyleavereq.Reason == "" {
@@ -69,15 +79,13 @@ func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveReques
 		return types.ErrStudentDatesNil
 	} else if applyleavereq.To == nil {
 		return types.ErrStudentDatesNil
-	} else if k.CheckStudent(ctx, applyleavereq.Address) == false {
-		return types.ErrStudentDoesNotExist
 	} else {
 		store := ctx.KVStore(k.storeKey)
 		marshalApplyLeave, err := k.cdc.Marshal(applyleavereq)
 		if err != nil {
 			panic(err)
 		}
-		addr := types.LeavesCounterKey(applyleavereq.Address)
+		addr := types.LeavesCounterKey(applyleavereq.LeaveId)
 		counter := store.Get(addr)
 		if counter == nil {
 			store.Set(addr, []byte("1"))
@@ -89,13 +97,18 @@ func (k Keeper) AplyLeave(ctx sdk.Context, applyleavereq *types.ApplyLeaveReques
 			c = c + 1
 			store.Set(addr, []byte(fmt.Sprint(c)))
 		}
+
 		counter = store.Get(addr)
 		store.Set(types.AppliedLeavesStoreKey(applyleavereq.LeaveId, string(counter)), marshalApplyLeave)
+		store.Set(types.LeavesStoreKey(applyleavereq.LeaveId), marshalApplyLeave)
 	}
 	return nil
 }
 
-//<-----------------ACCEPT LEAVE------------------------------------>//
+//<-------------------------------ACCEPT LEAVE------------------------------------>//
+
+//this methods is accepts the leaves if all fields are valid and rejects the leaves if any of the fileds
+//are not valid
 
 func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequest) error {
 	//if the admin is nil then the leave status is undefined
@@ -107,7 +120,6 @@ func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequ
 			panic(err)
 		}
 		store.Set(types.AcceptedLeavesStoreKey(acceptleavereq.Admin, acceptleavereq.LeaveId), marshalAcceptLeave)
-		//return types.ErrAdminNameNil
 	} else if acceptleavereq.LeaveId == "" {
 		store := ctx.KVStore(k.storeKey)
 		acceptleavereq.Status = types.LeaveStatus_STATUS_REJECTED
@@ -129,7 +141,9 @@ func (k Keeper) AcptLeave(ctx sdk.Context, acceptleavereq *types.AcceptLeaveRequ
 	return nil
 }
 
-//<---------------CHECK ADMIN------------------------------------->//
+//<-------------------------CHECK ADMIN--------------------------->//
+
+//This method takes the address as parameter and check whether the admin with that address is present or not
 
 func (k Keeper) CheckAdmin(ctx sdk.Context, address string) bool {
 	store := ctx.KVStore(k.storeKey)
@@ -141,7 +155,9 @@ func (k Keeper) CheckAdmin(ctx sdk.Context, address string) bool {
 	return true
 }
 
-//<-----------------CHECK STUDENT------------------------------>//
+//<----------------------CHECK STUDENT--------------------------->//
+
+//This method takes the address as parameter and check whether the student with that address is present or not
 
 func (k Keeper) CheckStudent(ctx sdk.Context, address string) bool {
 	store := ctx.KVStore(k.storeKey)
@@ -152,7 +168,9 @@ func (k Keeper) CheckStudent(ctx sdk.Context, address string) bool {
 	return true
 }
 
-//<-----------------GET STUDENT------------------------------->//
+//<---------------------------GET STUDENT---------------------------->//
+
+//this methods is used to get a student  by taking address as parameter
 
 func (k Keeper) GetStdnt(ctx sdk.Context, address string) (req types.AddStudentRequest, err error) {
 	store := ctx.KVStore(k.storeKey)
@@ -168,6 +186,8 @@ func (k Keeper) GetStdnt(ctx sdk.Context, address string) (req types.AddStudentR
 }
 
 //<---------------GET ADMIN------------------------------------>//
+
+//This method is used to get Admin by taking address as parameter
 
 func (k Keeper) GetAdmn(ctx sdk.Context, address string) (req types.RegisterAdminRequest, err error) {
 	if _, err := sdk.AccAddressFromBech32(address); err != nil {
@@ -185,6 +205,8 @@ func (k Keeper) GetAdmn(ctx sdk.Context, address string) (req types.RegisterAdmi
 
 //<-------------GET STUDENTS------------------------------------->//
 
+//This method is used to return all the  students that are present in the students store
+
 func (k Keeper) GetStdnts(ctx sdk.Context, getStudents *types.GetStudentsRequest) []*types.AddStudentRequest {
 	store := ctx.KVStore(k.storeKey)
 	var students []*types.AddStudentRequest
@@ -199,7 +221,9 @@ func (k Keeper) GetStdnts(ctx sdk.Context, getStudents *types.GetStudentsRequest
 	return students
 }
 
-//<------------------GET LEAVE REQUESTS------------------------------->//
+//<---------------------------GET LEAVE REQUESTS------------------------------->//
+
+//This method is used to get all the leave Request from the applied  leaves store
 
 func (k Keeper) GetLeaveRqsts(ctx sdk.Context, getLeaves *types.GetLeaveRequestsRequest) []*types.ApplyLeaveRequest {
 	store := ctx.KVStore(k.storeKey)
@@ -214,17 +238,45 @@ func (k Keeper) GetLeaveRqsts(ctx sdk.Context, getLeaves *types.GetLeaveRequests
 	return leavereqs
 }
 
-//<--------------GET APPROVED lEAVES------------------------------->//
+//<--------------------------GET APPROVED lEAVES------------------------------>//
 
-func (k Keeper) GetAcceptedLeaves(ctx sdk.Context, getLeaves *types.GetLeaveApprovesRequest) []*types.AcceptLeaveRequest {
+//This method is used to Get the Status of the leaves from applied leaves store
+
+func (k Keeper) GetLeavesStatus(ctx sdk.Context, getLeaves *types.GetLeaveApprovesRequest) []*types.AcceptLeaveRequest {
 	store := ctx.KVStore(k.storeKey)
-	var approves []*types.AcceptLeaveRequest
+	var status []*types.AcceptLeaveRequest
 	iter := store.Iterator(types.AcceptedLeavesKey, nil)
 	for ; iter.Valid(); iter.Next() {
 		var approve types.AcceptLeaveRequest
 		k.cdc.Unmarshal(iter.Value(), &approve)
-		approves = append(approves, &approve)
+		status = append(status, &approve)
 		fmt.Println("the students whose leaves are approved", approve)
 	}
-	return approves
+	return status
+}
+
+func (k Keeper) GetStatusByID(ctx sdk.Context, address string, leaveID string) (req types.AcceptLeaveRequest, err error) {
+	// if _, err := sdk.AccAddressFromBech32(leaveID); err != nil {
+	// 	panic(err)
+	// }
+	store := ctx.KVStore(k.storeKey)
+	student := store.Get(types.AcceptedLeavesStoreKey(address, leaveID))
+	if student == nil {
+		panic("student  not found")
+	}
+	k.cdc.MustUnmarshal(student, &req)
+	fmt.Println(req)
+	return req, err
+}
+
+func (k Keeper) GetLeaveReqByID(ctx sdk.Context, leaveID string) (req types.ApplyLeaveRequest, err error) {
+	store := ctx.KVStore(k.storeKey)
+	// counter := store.Get(types.LeavesCounterKey(leaveID))
+	leave := store.Get(types.LeavesStoreKey(leaveID))
+	if leave == nil {
+		panic("student leave request not found")
+	}
+	k.cdc.MustUnmarshal(leave, &req)
+	fmt.Println(req)
+	return req, err
 }

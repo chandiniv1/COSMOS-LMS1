@@ -24,6 +24,8 @@ func GetQueryCmd() *cobra.Command {
 		GetStudentsCmd(),
 		GetLeaveRequestListCmd(),
 		GetLeaveApprovesListCmd(),
+		GetStatusCmd(),
+		GetLeaveReqCmd(),
 	)
 	return queryTxCmd
 }
@@ -31,7 +33,7 @@ func GetQueryCmd() *cobra.Command {
 func GetStudentCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-student",
-		Short: "get-student returns the students by taking ID and Address",
+		Short: "|Address|",
 		Long:  `get-student returns the students by taking ID and Address`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -62,7 +64,7 @@ func GetStudentCmd() *cobra.Command {
 func GetAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-admin",
-		Short: "get-admin is used to get the admin by taking admin address",
+		Short: "|Address|",
 		Long:  `get-admin is used to get the admin by taking admin address`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -75,6 +77,66 @@ func GetAdminCmd() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.GetAdmin(cmd.Context(), &admin)
+
+			if err != nil {
+				panic(err)
+			}
+			return clientCtx.PrintProto(res)
+
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func GetStatusCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get-status",
+		Short: "|admin|leaveID",
+		Long:  `get-status returns the leave status of a student by taking ID`,
+
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				panic(err)
+			}
+
+			status := types.GetStatusRequest{
+				Admin:   args[0],
+				LeaveID: args[1],
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetStatus(cmd.Context(), &status)
+
+			if err != nil {
+				panic(err)
+			}
+
+			return clientCtx.PrintProto(res)
+
+		},
+	}
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+func GetLeaveReqCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get-leave-request",
+		Short: "|leaveID|",
+		Long:  `get-leave-request is used to get the leave request of a student by taking leaveID`,
+
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				panic(err)
+			}
+			leaveReq := types.GetLeaveRequest{
+				LeaveID: args[0],
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetLeaveReq(cmd.Context(), &leaveReq)
 
 			if err != nil {
 				panic(err)
@@ -147,7 +209,7 @@ func GetLeaveApprovesListCmd() *cobra.Command {
 				panic(err)
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetLeaveApproves(cmd.Context(), &types.GetLeaveApprovesRequest{})
+			res, err := queryClient.GetLeaveStatus(cmd.Context(), &types.GetLeaveApprovesRequest{})
 			if err != nil {
 				panic(err)
 			}
@@ -164,6 +226,6 @@ func init() {
 	rootCmd.AddCommand(GetStudentsCmd())
 	rootCmd.AddCommand(GetLeaveRequestListCmd())
 	rootCmd.AddCommand(GetLeaveApprovesListCmd())
-
-	// queryCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.AddCommand(GetStatusCmd())
+	rootCmd.AddCommand(GetLeaveReqCmd())
 }

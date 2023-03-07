@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"time"
-
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -31,8 +30,8 @@ func GetTxCmd() *cobra.Command {
 func AddStudentCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add-student",
-		Short: "AddStudentCmd requests to add the student with the given details",
-		Long:  `It gives the details of admin,address,name,id in order to add a  student`,
+		Short: "|address|name|id",
+		Long:  `AddStudentCmd requests to add the student with the given details.It gives the details of admin,address,name,id in order to add a  student`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -40,12 +39,12 @@ func AddStudentCmd() *cobra.Command {
 				panic(err)
 			}
 
-			admin := args[0]
-			address := args[1]
-			name := args[2]
-			id := args[3]
+			admin := clientCtx.GetFromAddress()
+			address := args[0]
+			name := args[1]
+			id := args[2]
 
-			msgClient := types.NewAddStudentRequest(admin, address, name, id)
+			msgClient := types.NewAddStudentRequest(admin.String(), address, name, id)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}
@@ -56,8 +55,8 @@ func AddStudentCmd() *cobra.Command {
 func RegisterAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-admin",
-		Short: "RegisterAdminCmd requests to register a admin with the given ddetails",
-		Long:  `It gives address and name in order to register the admin`,
+		Short: "|address|name",
+		Long:  `RegisterAdminCmd requests to register a admin with the given details,It gives address and name in order to register the admin`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -79,8 +78,8 @@ func RegisterAdminCmd() *cobra.Command {
 func ApplyLeaveCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "apply-leave",
-		Short: "ApplyLeaveCmd requests to apply a leave for the students with the given details",
-		Long:  `It gives address,reason,leaveID,from_date,to_date in order to apply leave`,
+		Short: "",
+		Long:  `ApplyLeaveCmd requests to apply a leave for the students with the given details,It gives address,reason,leaveID,from_date,to_date in order to apply leave`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -91,14 +90,15 @@ func ApplyLeaveCmd() *cobra.Command {
 			fromDate, _ := time.Parse(format, args[3])
 			toDate, _ := time.Parse(format, args[4])
 
+			admin := clientCtx.GetFromAddress()
 			address := args[0]
 			reason := args[1]
 			leaveID := args[2]
 			from := &fromDate
 			to := &toDate
 			//to:=args[4]
+			msgClient := types.NewApplyLeaveRequest(admin.String(), address, reason, leaveID, from, to)
 
-			msgClient := types.NewApplyLeaveRequest(address, reason, leaveID, from, to)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}
@@ -109,8 +109,8 @@ func ApplyLeaveCmd() *cobra.Command {
 func AcceptLeaveCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "accept-leave",
-		Short: "AcceptLeaveCmd requests to accept a leave for the students with the given details",
-		Long:  `It requests with the params such as admin and leaveID `,
+		Short: "|admin|leaveID|",
+		Long:  `AcceptLeaveCmd requests to accept a leave for the students with the given details,It requests with the params such as admin and leaveID `,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -118,11 +118,12 @@ func AcceptLeaveCmd() *cobra.Command {
 				panic(err)
 			}
 
-			admin := args[0]
-			leaveID := args[1]
+			admin := clientCtx.GetFromAddress()
+
+			leaveID := args[0]
 			//status:=args[2]
 
-			msgClient := types.NewAcceptLeaveRequest(admin, leaveID, types.LeaveStatus_STATUS_ACCEPTED)
+			msgClient := types.NewAcceptLeaveRequest(admin.String(), leaveID, types.LeaveStatus_STATUS_ACCEPTED)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
 	}

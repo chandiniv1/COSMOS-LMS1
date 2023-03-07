@@ -49,7 +49,8 @@ message AddStudentsResponse{}
 
 message AddStudentResponse{}
 
-message ApplyLeaveRequest {   
+message ApplyLeaveRequest { 
+    string Admin=6;
     string address = 1;   
     string reason = 2;  
     string leave_id=5;

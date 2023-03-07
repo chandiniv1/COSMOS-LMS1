@@ -74,17 +74,18 @@ func (msg AcceptLeaveRequest) ValidateBasic() error {
 	// if _, err := sdk.AccAddressFromBech32(msg.Admin); err != nil {
 	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
 	// }
-	if msg.Admin == "" {
-		return ErrAdminAddressNil
-	} else if msg.LeaveId == "" {
-		return ErrStudentIdNil
-	} else {
-		return nil
-	}
+	// if msg.Admin == "" {
+	// 	return ErrAdminAddressNil
+	// } else if msg.LeaveId == "" {
+	// 	return ErrStudentIdNil
+	// } else {
+	return nil
+	//}
 }
 
-func NewApplyLeaveRequest(address string, reason string, leaveID string, from *time.Time, to *time.Time) *ApplyLeaveRequest {
+func NewApplyLeaveRequest(admin string, address string, reason string, leaveID string, from *time.Time, to *time.Time) *ApplyLeaveRequest {
 	return &ApplyLeaveRequest{
+		Admin:   admin,
 		Address: address,
 		Reason:  reason,
 		LeaveId: leaveID,
@@ -99,7 +100,7 @@ func (msg ApplyLeaveRequest) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg ApplyLeaveRequest) GetSigners() []sdk.AccAddress {
-	fromAddress, _ := sdk.AccAddressFromBech32(msg.Address)
+	fromAddress, _ := sdk.AccAddressFromBech32(msg.Admin)
 	return []sdk.AccAddress{fromAddress}
 }
 

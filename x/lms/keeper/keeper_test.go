@@ -224,6 +224,28 @@ func (s *TestSuite) TestGetLeaveRqsts(){
 	s.stdntKeeper.GetLeaveRqsts(s.ctx,&types.GetLeaveRequestsRequest{})
 }
 
+func (s *TestSuite) TestGetLeavesStatus(){
+	s.TestAcceptLeave()
+	s.stdntKeeper.GetLeavesStatus(s.ctx,&types.GetLeaveApprovesRequest{})
+}
+
+func (s *TestSuite) TestGetLeaveStatus(){
+	s.TestAcceptLeave()
+	res:=types.GetStatusRequest{
+		Admin: "sita",
+		LeaveID: "0001",	
+	}
+	s.stdntKeeper.GetStatusByID(s.ctx,res.Admin,res.LeaveID)
+}
+
+func (s *TestSuite) TestGetLeaveReq(){
+	s.TestApplyLeave()
+	res:=types.GetLeaveRequest{
+		LeaveID: "1001",
+	}
+	s.stdntKeeper.GetLeaveReqByID(s.ctx,res.LeaveID)
+}
+
 func TestTestSuite(t *testing.T) {
 	suite.Run(t, new(TestSuite))
 }
