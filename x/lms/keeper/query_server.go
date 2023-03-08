@@ -21,10 +21,7 @@ func (k Keeper) GetStudents(goCtx context.Context, req *types.GetStudentsRequest
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	students := k.GetStdnts(ctx, req)
-	// resStd := []*types.AddStudentRequest{}
-	// for _, student := range students {
-	// 	resStd = append(resStd, &student)
-	// }
+
 	res := types.GetStudentsResponse{
 		Students: students,
 	}

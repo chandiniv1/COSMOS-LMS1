@@ -56,6 +56,8 @@ message ApplyLeaveRequest {
     string leave_id=5;
     google.protobuf.Timestamp from = 3 [(gogoproto.stdtime) = true];  
     google.protobuf.Timestamp to = 4 [(gogoproto.stdtime) = true];
+    LeaveStatus status=7;
+
 }
 
 message ApplyLeaveResponse {
@@ -66,12 +68,13 @@ enum LeaveStatus {
     STATUS_UNDEFINED = 0;   
     STATUS_ACCEPTED = 1;   
     STATUS_REJECTED = 2;
+    STATUS_PENDING=3;
 }
 
 message AcceptLeaveRequest {
     string admin = 1;   
-    string leave_id = 2;   
-    LeaveStatus status = 3;
+    string leave_id = 2;  
+    LeaveStatus status = 4;
 }
 
 message AcceptLeaveResponse {
@@ -83,7 +86,6 @@ service Msg {
     rpc AddStudent(AddStudentRequest) returns (AddStudentResponse);
     rpc ApplyLeave(ApplyLeaveRequest) returns  (ApplyLeaveResponse);
     rpc AcceptLeave(AcceptLeaveRequest) returns (AcceptLeaveResponse);
-   // rpc AddStudents(AddStudentRequests) returns (AddStudentResponses){};
 }
 
 

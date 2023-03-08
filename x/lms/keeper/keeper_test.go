@@ -54,8 +54,9 @@ func (s *TestSuite) TestAddStudent() {
 		{"", "mango", "apple", "0003", types.ErrStudentAddressNil},
 	}
 	for _, test := range tests {
+		add := sdk.AccAddress(test.Address)
 		err := s.stdntKeeper.AddStdnt(s.ctx, &types.AddStudentRequest{
-			Address: test.Address,
+			Address: add.String(),
 			Admin:   test.Admin,
 			Name:    test.Name,
 			Id:      test.Id,

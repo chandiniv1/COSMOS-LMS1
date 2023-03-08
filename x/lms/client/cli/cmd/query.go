@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -33,8 +31,9 @@ func GetQueryCmd() *cobra.Command {
 func GetStudentCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-student",
-		Short: "|Address|",
-		Long:  `get-student returns the students by taking ID and Address`,
+		Short: "get-student returns the student by taking ID and Address",
+		Long:  `get-student returns the student by taking ID and Address`,
+		Example:`./simd query lms get-student cosmos1et74ecw6wymvftkvfha289rxyxcxk42rfh8d89`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -64,8 +63,9 @@ func GetStudentCmd() *cobra.Command {
 func GetAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-admin",
-		Short: "|Address|",
+		Short: "get-admin is used to get the admin by taking admin address",
 		Long:  `get-admin is used to get the admin by taking admin address`,
+		Example:`./simd query lms get-admin cosmos122ljzq3e9fucpsz3328g47zdslz0wt45nsnlp2`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -92,8 +92,9 @@ func GetAdminCmd() *cobra.Command {
 func GetStatusCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-status",
-		Short: "|admin|leaveID",
+		Short: "get-status returns the leave status of a student by taking ID",
 		Long:  `get-status returns the leave status of a student by taking ID`,
+		Example:`./simd query lms get-status cosmos122ljzq3e9fucpsz3328g47zdslz0wt45nsnlp2 00318`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -124,8 +125,9 @@ func GetStatusCmd() *cobra.Command {
 func GetLeaveReqCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-leave-request",
-		Short: "|leaveID|",
+		Short: "get-leave-request is used to get the leave request of a student by taking leaveID",
 		Long:  `get-leave-request is used to get the leave request of a student by taking leaveID`,
+		Example:`./simd query lms get-leave-request 00318` ,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -154,6 +156,7 @@ func GetStudentsCmd() *cobra.Command {
 		Use:   "get-students",
 		Short: "get-students returns all the students",
 		Long:  `get-students returns all the students present in the student store`,
+		Example:`./simd query lms get-students`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -161,12 +164,10 @@ func GetStudentsCmd() *cobra.Command {
 				panic(err)
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-			fmt.Println("Im inside the getstudents cli")
 			res, err := queryClient.GetStudents(cmd.Context(), &types.GetStudentsRequest{})
 			if err != nil {
 				panic(err)
 			}
-			// fmt.Println("the resulted received is ", res.Students)
 			return clientCtx.PrintProto(res)
 		},
 	}
@@ -179,6 +180,7 @@ func GetLeaveRequestListCmd() *cobra.Command {
 		Use:   "get-leave-requests",
 		Short: "get-leave-requests returns all the students who applied for leaves",
 		Long:  `get-leave-requests returns all the students who applied for leaves in the applied leaves store`,
+		Example: `./simd query lms get-leave-requests`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -202,6 +204,7 @@ func GetLeaveApprovesListCmd() *cobra.Command {
 		Use:   "get-leave-approves",
 		Short: "get-leave-approves returns all the students whose leaves are approved",
 		Long:  `get-leave-approves returns all the students whose leaves are approved in the accepted leaves store`,
+		Example: `./simd query lms get-leave-approves`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

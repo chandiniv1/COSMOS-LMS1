@@ -3,8 +3,9 @@ package types
 import (
 
 	//"context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"strconv"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	//"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"time"
 )
@@ -26,7 +27,7 @@ func NewAddStudentRequest(admin string, address string, name string, id string) 
 }
 
 func (msg AddStudentRequest) GetSignBytes() []byte {
-	return []byte{}
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners Implements Msg.
@@ -36,9 +37,9 @@ func (msg AddStudentRequest) GetSigners() []sdk.AccAddress {
 }
 
 func (msg AddStudentRequest) ValidateBasic() error {
-	// if _, err := sdk.AccAddressFromBech32("./"); err != nil {
-	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
-	// }
+	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
+		return ErrInvalidAddress
+	}
 	if msg.Admin == "" {
 		return ErrAdminAddressNil
 	} else if msg.Address == "" {
@@ -52,16 +53,25 @@ func (msg AddStudentRequest) ValidateBasic() error {
 	}
 }
 
-func NewAcceptLeaveRequest(admin string, leaveID string, status LeaveStatus) *AcceptLeaveRequest {
+func NewAcceptLeaveRequest(admin string, leaveID string, status string) *AcceptLeaveRequest {
+	s, _ := strconv.Atoi(status)
+	var leaveStatus LeaveStatus
+	if s == 0 {
+		leaveStatus = 0
+	} else if s == 1 {
+		leaveStatus = 1
+	} else {
+		leaveStatus = 2
+	}
 	return &AcceptLeaveRequest{
 		Admin:   admin,
 		LeaveId: leaveID,
-		Status:  status,
+		Status:  leaveStatus,
 	}
 }
 
 func (msg AcceptLeaveRequest) GetSignBytes() []byte {
-	return []byte{}
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners Implements Msg.
@@ -71,19 +81,18 @@ func (msg AcceptLeaveRequest) GetSigners() []sdk.AccAddress {
 }
 
 func (msg AcceptLeaveRequest) ValidateBasic() error {
-	// if _, err := sdk.AccAddressFromBech32(msg.Admin); err != nil {
-	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
-	// }
-	// if msg.Admin == "" {
-	// 	return ErrAdminAddressNil
-	// } else if msg.LeaveId == "" {
-	// 	return ErrStudentIdNil
-	// } else {
-	return nil
-	//}
+	if _, err := sdk.AccAddressFromBech32(msg.Admin); err != nil {
+		return ErrInvalidAddress
+	} else if msg.Admin == "" {
+		return ErrAdminAddressNil
+	} else if msg.LeaveId == "" {
+		return ErrStudentIdNil
+	} else {
+		return nil
+	}
 }
 
-func NewApplyLeaveRequest(admin string, address string, reason string, leaveID string, from *time.Time, to *time.Time) *ApplyLeaveRequest {
+func NewApplyLeaveRequest(admin string, address string, reason string, leaveID string, from *time.Time, to *time.Time, status LeaveStatus) *ApplyLeaveRequest {
 	return &ApplyLeaveRequest{
 		Admin:   admin,
 		Address: address,
@@ -91,11 +100,12 @@ func NewApplyLeaveRequest(admin string, address string, reason string, leaveID s
 		LeaveId: leaveID,
 		From:    from,
 		To:      to,
+		Status:  status,
 	}
 }
 
 func (msg ApplyLeaveRequest) GetSignBytes() []byte {
-	return []byte{}
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners Implements Msg.
@@ -105,10 +115,9 @@ func (msg ApplyLeaveRequest) GetSigners() []sdk.AccAddress {
 }
 
 func (msg ApplyLeaveRequest) ValidateBasic() error {
-	// if _, err := sdk.AccAddressFromBech32(""); err != nil {
-	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
-	// }
-	if (msg.Address) == "" {
+	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
+		return ErrInvalidAddress
+	} else if (msg.Address) == "" {
 		return ErrStudentAddressNil
 	} else if (msg.From) == nil {
 		return ErrStudentDatesNil
@@ -129,7 +138,7 @@ func NewRegisterAdminRequest(address string, name string) *RegisterAdminRequest 
 }
 
 func (msg RegisterAdminRequest) GetSignBytes() []byte {
-	return []byte{}
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&msg))
 }
 
 // GetSigners Implements Msg.
@@ -139,15 +148,13 @@ func (msg RegisterAdminRequest) GetSigners() []sdk.AccAddress {
 }
 
 func (msg RegisterAdminRequest) ValidateBasic() error {
-	// if _, err := sdk.AccAddressFromBech32("hii"); err != nil {
-	// 	return sdkerrors.ErrInvalidAddress.Wrapf("invalid from address: %s", err)
-	// }
-	if msg.Address == "" {
+	if _, err := sdk.AccAddressFromBech32(msg.Address); err != nil {
+		return ErrInvalidAddress
+	} else if msg.Address == "" {
 		return ErrAdminAddressNil
 	} else if msg.Name == "" {
 		return ErrAdminNameNil
 	} else {
 		return nil
 	}
-
 }

@@ -17,4 +17,5 @@ var (
 	ErrStudentDatesNil      = sdkerrors.Register(ModuleName, 10, "Student Dates cant be nil")
 	ErrEmptyReason          = sdkerrors.Register(ModuleName, 11, "Reason cant be empty")
 	ErrLeaveNeverApplied    = sdkerrors.Register(ModuleName, 12, "Student never applied leave")
+	ErrInvalidAddress       = sdkerrors.Register(ModuleName, 13, "Invalid address")
 )
