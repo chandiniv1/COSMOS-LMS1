@@ -175,8 +175,135 @@ We can see the available queries using :
 ```
    ./lmsd query lms --help
 ```
-#### 
+#### GET STUDENT
 
+This query is used to get the student by address
+```
+  ./lmsd query lms get-student [flag]
+ ```
+##### EXAMPLE
+```
+  ./lmsd query lms get-student cosmos1et0unt0p2ya5934mwyg9cfxmjcjvf4hukmycqn
+```
+##### OUTPUT
+```
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   address:cosmos1et0unt0p2ya5934mwyg9cfxmjcjvf4hukmycqn
+   name:priya
+   id:00317
+```
+***
+#### Get ADMIN
 
+This query is used to get the admin by using address
 
+```
+  ./lmsd query lms get-admin [flags]
+```
+##### EXAMPLE
+```
+  ./lmsd query lms get-admin cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+```
+##### OUTPUT
+```
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   name:chandini
+```
+***
+#### GET LEAVE REQUEST
+
+This query is used to get the leave request of the student by taking leaveID
+```
+  ./lmsd query lms get-leave-request [flag]
+ ```
+##### EXAMPLE
+```
+  ./lmsd query lms get-leave-request 00317
+```
+##### OUTPUT
+```
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   address:cosmos1et0unt0p2ya5934mwyg9cfxmjcjvf4hukmycqn
+   reason:cold
+   leaveID:00317
+   from: "2023-03-19T00:00:00Z"
+   to: "2023-03-24T00:00:00Z"
+   status:STATUS_PENDING
+```
+***
+#### GET STATUS
+
+This query is used to get the leave status of the student by taking admin address and leaveID
+```
+  ./lmsd query lms get-status [flag] [flag]
+ ```
+##### EXAMPLE
+```
+  ./lmsd query lms get-status cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5 00317
+```
+##### OUTPUT
+```
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   leaveID:00317
+   status:STATUS_ACCEPTED
+```
+***
+#### GET STUDENTS
+
+This query is used to get the students
+```
+  ./lmsd query lms get-students
+ ```
+##### OUTPUT
+```
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   address:cosmos1et0unt0p2ya5934mwyg9cfxmjcjvf4hukmycqn
+   name:priya
+   id:00317
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   address:cosmos1et0unt0p2ya5934mwyg9cfxmjcjvf4hukqwert
+   name:anu
+   id:00313
+```
+***
+#### GET LEAVE REQUESTS
+
+This query is used to get the leave requests of the students
+```
+  ./lmsd query lms get-leave-requests
+ ```
+##### OUTPUT
+```
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   address:cosmos1et0unt0p2ya5934mwyg9cfxmjcjvf4hukmycqn
+   reason:cold
+   leaveID:00317
+   from: "2023-03-19T00:00:00Z"
+   to: "2023-03-24T00:00:00Z"
+   status:STATUS_ACCEPTED
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   address:cosmos1et0unt0p2ya5934mwyg9cfxmjcjvf4hukqwert
+   reason:cough
+   leaveID:00313
+   from: "2023-03-20T00:00:00Z"
+   to: "2023-03-22T00:00:00Z"
+   status:STATUS_REJECTED
+  
+```
+***
+#### GET LEAVE APPROVES
+
+This query is used to get the leave status of all the students
+```
+  ./lmsd query lms get-leave-approves
+ ```
+##### OUTPUT
+```
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   leaveID:00317
+   status:STATUS_ACCEPTED
+  -admin:cosmos1uh5rv23rsrgn9lcn5f503cl4qdxh0jkqv8q3s5
+   leaveID:00313
+   status:STATUS_REJECTED
+```
 
