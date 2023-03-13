@@ -1,12 +1,8 @@
 package types
 
 import (
-
-	//"context"
 	"strconv"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	//"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"time"
 )
 

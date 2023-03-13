@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"time"
+
 	"github.com/chandiniv1/COSMOS-LMS1/x/lms/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -29,10 +30,10 @@ func GetTxCmd() *cobra.Command {
 
 func AddStudentCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "add-student",
-		Short: "AddStudentCmd requests to add the student with the given details.",
-		Long:  `It takes the details of admin,address,name,id in order to add a  student`,
-		Example:`./simd tx lms add-student cosmos1et74ecw6wymvftkvfha289rxyxcxk42rfh8d89 saru 00318 --from validator-key --chain-id testnet`, 
+		Use:     "add-student [address] [name] [id]",
+		Short:   "AddStudentCmd requests to add the student with the given details.",
+		Long:    `It takes the details of admin,address,name,id in order to add a  student`,
+		Example: `./lmsd tx lms add-student cosmos1et74ecw6wymvftkvfha289rxyxcxk42rfh8d89 saru 00318 --from validator-key --chain-id testnet`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -54,10 +55,10 @@ func AddStudentCmd() *cobra.Command {
 
 func RegisterAdminCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-admin",
-		Short: "RegisterAdminCmd requests to register a admin with the given details",
-		Long:  `It takes the address and name in order to register the admin`,
-		Example:`./simd tx lms register-admin cosmos122ljzq3e9fucpsz3328g47zdslz0wt45nsnlp2 vitwit --from validator-key --chain-id testnet`,
+		Use:     "register-admin [address] [name]",
+		Short:   "RegisterAdminCmd requests to register a admin with the given details",
+		Long:    `It takes the address and name in order to register the admin`,
+		Example: `./lmsd tx lms register-admin cosmos122ljzq3e9fucpsz3328g47zdslz0wt45nsnlp2 vitwit --from validator-key --chain-id testnet`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -78,10 +79,10 @@ func RegisterAdminCmd() *cobra.Command {
 
 func ApplyLeaveCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "apply-leave",
-		Short: "ApplyLeaveCmd requests to apply a leave for the students with the given details,",
-		Long:  `It gives address,reason,leaveID,from_date,to_date in order to apply leave`,
-		Example:`./simd tx lms apply-leave 000x724 cold  00318 2023-03-08 2023-03-10 --from validator-key --chain-id testnet`,
+		Use:     "apply-leave [address] [reason] [leaveID] [From] [To]",
+		Short:   "ApplyLeaveCmd requests to apply a leave for the students with the given details,",
+		Long:    `It gives address,reason,leaveID,from_date,to_date in order to apply leave`,
+		Example: `./lmsd tx lms apply-leave 000x724 cold  00318 2023-03-08 2023-03-10 --from validator-key --chain-id testnet`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -98,7 +99,7 @@ func ApplyLeaveCmd() *cobra.Command {
 			leaveID := args[2]
 			from := &fromDate
 			to := &toDate
-			msgClient := types.NewApplyLeaveRequest(admin.String(), address, reason, leaveID, from, to,types.LeaveStatus_STATUS_PENDING)
+			msgClient := types.NewApplyLeaveRequest(admin.String(), address, reason, leaveID, from, to, types.LeaveStatus_STATUS_PENDING)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},
@@ -109,10 +110,10 @@ func ApplyLeaveCmd() *cobra.Command {
 
 func AcceptLeaveCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "accept-leave",
-		Short: "AcceptLeaveCmd requests to accept a leave for the students with the given details,",
-		Long:  `It contains the params such as admin and leaveID `,
-		Example:`/simd tx lms accept-leave 00318 --from validator-key --chain-id testnet` ,
+		Use:     "accept-leave [leaveID] [status]",
+		Short:   "AcceptLeaveCmd requests to accept a leave for the students with the given details,",
+		Long:    `It contains the params such as admin and leaveID `,
+		Example: `/lmsd tx lms accept-leave 00318 --from validator-key --chain-id testnet`,
 
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -122,8 +123,8 @@ func AcceptLeaveCmd() *cobra.Command {
 
 			admin := clientCtx.GetFromAddress()
 			leaveID := args[0]
-			status:=args[1]
-	
+			status := args[1]
+
 			msgClient := types.NewAcceptLeaveRequest(admin.String(), leaveID, status)
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msgClient)
 		},

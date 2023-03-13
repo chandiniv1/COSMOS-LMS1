@@ -51,7 +51,7 @@ func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
-// ValidateGenesis performs genesis state validation for the nft module.
+// ValidateGenesis performs genesis state validation for the lms module.
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config sdkclient.TxEncodingConfig, bz json.RawMessage) error {
 	return nil
 }
@@ -59,19 +59,19 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config sdkclient.TxEn
 // RegisterInvariants does nothing, there are no invariants to enforce
 func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the nft module.
+// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the lms module.
 func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx sdkclient.Context, mux *runtime.ServeMux) {
 	if err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx)); err != nil {
 		panic(err)
 	}
 }
 
-// GetQueryCmd returns the cli query commands for the nft module
+// GetQueryCmd returns the cli query commands for the lms module
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cmd.GetQueryCmd()
 }
 
-// GetTxCmd returns the transaction commands for the nft module
+// GetTxCmd returns the transaction commands for the lms module
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cmd.GetTxCmd()
 }
@@ -97,7 +97,7 @@ func (AppModule) Name() string {
 	return types.ModuleName
 }
 
-// Route returns the message routing key for the staking module.
+// Route returns the message routing key for the lms module.
 func (am AppModule) Route() sdk.Route {
 	return sdk.NewRoute(types.RouterKey, nil)
 }
@@ -109,13 +109,12 @@ func (am AppModule) NewHandler() sdk.Handler {
 // QuerierRoute returns the route we respond to for abci queries
 func (AppModule) QuerierRoute() string { return types.QuerierRoute }
 
-// LegacyQuerierHandler returns the nft module sdk.Querier.
+// LegacyQuerierHandler returns the lms module sdk.Querier.
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return nil
 }
 
-// InitGenesis performs genesis initialization for the nft module. It returns
-// no validator updates.
+// InitGenesis performs genesis initialization for the lms module. It returns no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	// var genesisState types.GenesisState
 	// cdc.MustUnmarshalJSON(data, &genesisState)
@@ -124,8 +123,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	return nil
 }
 
-// ExportGenesis returns the exported genesis state as raw bytes for the nft
-// module.
+// ExportGenesis returns the exported genesis state as raw bytes for the lms module
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	// gs := am.studentkeeper.ExportGenesis(ctx)
 	// return cdc.MustMarshalJSON(gs)
