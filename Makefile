@@ -2,8 +2,8 @@ protoVer=v0.7
 protoImageName=tendermintdev/sdk-proto-gen:$(protoVer)
 containerProtoGen=universus-proto-gen-$(protoVer)
 containerProtoGenSwagger=universus-proto-gen-swagger-$(protoVer)
-containerProtoFmt=universus-proto-fmt-$(protoVer)
-
+containerProtoFmt=universus-proto-fmt-$(protoVer)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
 
 proto-gen:
 	@echo "Generating Protobuf files"
@@ -141,3 +141,4 @@ clean:
     tmp-swagger-gen/
 
 .PHONY: distclean clean
+                                                                                                                                                                                                                                                                                                  
