@@ -440,6 +440,7 @@ func NewSimApp(
 		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
 		lmsmodule.NewAppModule(appCodec, app.LMSKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
+		ibctransfer.NewAppModule(app.IBCTransferKeeper),
         ibcfee.NewAppModule(app.IBCFeeKeeper),
 	)
 
