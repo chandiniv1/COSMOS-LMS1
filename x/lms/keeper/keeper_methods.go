@@ -165,7 +165,7 @@ func (k Keeper) GetStdnt(ctx sdk.Context, address string) (req types.AddStudentR
 	if student == nil {
 		panic("student not found")
 	}
-	fmt.Println(student)
+	fmt.Println("student: ", student)
 	k.cdc.MustUnmarshal(student, &req)
 	fmt.Println(req)
 	return req, err
