@@ -14,7 +14,6 @@ var (
 	StudentKey        = []byte{0x02}
 	LeavesKey         = []byte{0x07}
 	CounterKey        = []byte{0x03}
-	SequenceKey       = []byte{0x04}
 	AcceptedLeavesKey = []byte{0x05}
 	AppliedLeavesKey  = []byte{0x06}
 )
@@ -41,11 +40,10 @@ func LeavesStoreKey(leaveID string) []byte {
 }
 
 func AcceptedLeavesStoreKey(admin string, leaveID string) []byte {
-	key := make([]byte, len(AcceptedLeavesKey)+len(admin)+len(SequenceKey)+len(leaveID))
+	key := make([]byte, len(AcceptedLeavesKey)+len(admin)+len(leaveID))
 	copy(key, AcceptedLeavesKey)
 	copy(key[len(AcceptedLeavesKey):], []byte(admin))
-	copy(key[len(AcceptedLeavesKey)+len(admin):], SequenceKey)
-	copy(key[len(AcceptedLeavesKey)+len(admin)+len(SequenceKey):], []byte(leaveID))
+	copy(key[len(AcceptedLeavesKey)+len(admin):], []byte(leaveID))
 	return key
 }
 
